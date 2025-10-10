@@ -1,0 +1,66 @@
+# Sensitive files - NEVER publish these
+.env*
+.env.local
+.env.*.local
+*.key
+*.pem
+*.cert
+.npmrc
+
+# Test files (source)
+**/*.test.ts
+**/*.spec.ts
+test/
+coverage/
+.nyc_output/
+
+# Compiled test files (don't publish these)
+dist/test
+dist/test/**
+
+# Development files
+.github/
+.vscode/
+.idea/
+.DS_Store
+*.log
+
+# Build artifacts
+*.tsbuildinfo
+tsconfig.tsbuildinfo
+*.d.ts.map
+
+# Source files (we publish dist/)
+src/
+tsconfig.json
+
+# Documentation that's not needed in package
+docs/
+examples/
+*.md
+!README.md
+
+# Git files
+.git/
+.gitignore
+.gitattributes
+
+# CI/CD
+.travis.yml
+.gitlab-ci.yml
+circle.yml
+appveyor.yml
+
+# Package tarballs
+*.tgz
+
+# Development scripts
+scripts/
+create-test-project.sh
+
+# Development documentation
+npm-package-complete-guide.md
+FIXES_v0.1.1.md
+TEST_SETUP.md
+TESTING_QUICK_START.md
+FILE_STRATEGY.md
