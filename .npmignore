@@ -28,6 +28,7 @@ dist/test/**
 # Build artifacts
 *.tsbuildinfo
 tsconfig.tsbuildinfo
+*.d.ts.map
 
 # Source files (we publish dist/)
 src/

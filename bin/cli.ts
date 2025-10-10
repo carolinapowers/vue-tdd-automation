@@ -57,6 +57,9 @@ program
       console.log('  3. Read TDD_WORKFLOW.md for detailed guide\n');
     } catch (error) {
       console.error(chalk.red.bold('\n❌ Error:'), (error as Error).message);
+      if (process.env.DEBUG) {
+        console.error(chalk.gray((error as Error).stack));
+      }
       process.exit(1);
     }
   });
@@ -76,6 +79,9 @@ program
       console.log('  2. Implement the component to make tests pass\n');
     } catch (error) {
       console.error(chalk.red.bold('\n❌ Error:'), (error as Error).message);
+      if (process.env.DEBUG) {
+        console.error(chalk.gray((error as Error).stack));
+      }
       process.exit(1);
     }
   });
@@ -91,6 +97,9 @@ program
       await createFeature(options);
     } catch (error) {
       console.error(chalk.red.bold('\n❌ Error:'), (error as Error).message);
+      if (process.env.DEBUG) {
+        console.error(chalk.gray((error as Error).stack));
+      }
       process.exit(1);
     }
   });

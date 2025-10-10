@@ -39,6 +39,9 @@ program
     }
     catch (error) {
         console.error(chalk.red.bold('\n❌ Error:'), error.message);
+        if (process.env.DEBUG) {
+            console.error(chalk.gray(error.stack));
+        }
         process.exit(1);
     }
 });
@@ -58,6 +61,9 @@ program
     }
     catch (error) {
         console.error(chalk.red.bold('\n❌ Error:'), error.message);
+        if (process.env.DEBUG) {
+            console.error(chalk.gray(error.stack));
+        }
         process.exit(1);
     }
 });
@@ -73,6 +79,9 @@ program
     }
     catch (error) {
         console.error(chalk.red.bold('\n❌ Error:'), error.message);
+        if (process.env.DEBUG) {
+            console.error(chalk.gray(error.stack));
+        }
         process.exit(1);
     }
 });

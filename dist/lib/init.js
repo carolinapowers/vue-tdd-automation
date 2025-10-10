@@ -13,6 +13,10 @@ export async function initTDD(options = {}) {
     const cwd = process.cwd();
     // Templates are in the package root, up 2 levels from dist/lib
     const templatesDir = path.join(__dirname, '../../templates');
+    // Verify templates directory exists
+    if (!fs.existsSync(templatesDir)) {
+        throw new Error(`Templates directory not found at ${templatesDir}. Package may be corrupted. Please try reinstalling: npm install -D @vue-tdd/automation`);
+    }
     // Check if this is a Vue project
     const packageJsonPath = path.join(cwd, 'package.json');
     if (!fs.existsSync(packageJsonPath)) {
