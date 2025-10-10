@@ -1,0 +1,130 @@
+name: TDD Workflow
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+  push:
+    branches: [main]
+
+jobs:
+  test-first:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Check for test files in PR
+        if: github.event_name == 'pull_request'
+        run: |
+          echo "Checking for test files in this PR..."
+          FILES_CHANGED=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
+          echo "Files changed: $FILES_CHANGED"
+          
+          # Check if any test files were added or modified
+          if echo "$FILES_CHANGED" | grep -E "\.(test|spec)\.(ts|tsx)$"; then
+            echo "✅ Test files found in PR"
+          else
+            # Check if this is a feature branch
+            if [[ "${{ github.head_ref }}" == feature/* ]]; then
+              echo "⚠️ Warning: Feature branch without test files"
+              echo "Remember: TDD requires writing tests first!"
+            fi
+          fi
+          
+      - name: Run tests with coverage
+        run: npm run test:coverage
+        continue-on-error: true
+        id: coverage
+
+      - name: Check if tests exist
+        id: check-tests
+        run: |
+          if find src -name "*.test.ts" -o -name "*.spec.ts" | grep -q .; then
+            echo "tests_exist=true" >> $GITHUB_OUTPUT
+          else
+            echo "tests_exist=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Verify coverage thresholds
+        if: steps.check-tests.outputs.tests_exist == 'true'
+        run: |
+          echo "✅ Verifying coverage meets 80% threshold..."
+          if [ "${{ steps.coverage.outcome }}" == "failure" ]; then
+            echo "❌ Coverage below threshold or tests failed"
+            exit 1
+          fi
+          
+      - name: Upload coverage reports
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: coverage-report
+          path: coverage/
+          
+      - name: Comment PR with coverage
+        uses: actions/github-script@v6
+        if: github.event_name == 'pull_request' && always()
+        with:
+          script: |
+            const fs = require('fs');
+            let coverageReport = '## 📊 Test Coverage Report\n\n';
+            
+            try {
+              const coverage = JSON.parse(fs.readFileSync('./coverage/coverage-summary.json', 'utf8'));
+              const total = coverage.total;
+              
+              coverageReport += '| Metric | Coverage | Threshold |\n';
+              coverageReport += '|--------|----------|----------|\n';
+              coverageReport += `| Lines | ${total.lines.pct}% | 80% |\n`;
+              coverageReport += `| Statements | ${total.statements.pct}% | 80% |\n`;
+              coverageReport += `| Functions | ${total.functions.pct}% | 80% |\n`;
+              coverageReport += `| Branches | ${total.branches.pct}% | 80% |\n`;
+              
+              // Add emoji based on coverage
+              if (total.lines.pct >= 90) {
+                coverageReport += '\n🎉 Excellent coverage!';
+              } else if (total.lines.pct >= 80) {
+                coverageReport += '\n✅ Good coverage!';
+              } else {
+                coverageReport += '\n⚠️ Coverage below threshold';
+              }
+            } catch (error) {
+              coverageReport += 'Coverage report not available';
+            }
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: coverageReport
+            })
+
+  lint:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+          
+      - name: Install dependencies
+        run: npm ci
+        
+      - name: Type check
+        run: npm run build -- --noEmit

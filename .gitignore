@@ -1,0 +1,13 @@
+node_modules/
+*.log
+.DS_Store
+coverage/
+.vscode/
+.idea/
+*.tsbuildinfo
+
+# NPM package tarballs (created by npm pack)
+*.tgz
+
+# Test directories
+../vue-tdd-test-*
