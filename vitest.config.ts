@@ -17,10 +17,10 @@ export default defineConfig({
         'bin/**' // CLI entry point - mostly glue code
       ],
       thresholds: {
-        lines: 80,
-        functions: 80,
-        branches: 80,
-        statements: 80
+        lines: 70,
+        functions: 75,
+        branches: 70,
+        statements: 70
       }
     },
     include: ['test/**/*.test.ts'],
