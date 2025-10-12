@@ -1,6 +1,8 @@
 /**
  * Type-safe JSON parsing utilities
  * Provides validated JSON parsing with TypeScript type guards
+ *
+ * @module json-utils
  */
 
 /**
