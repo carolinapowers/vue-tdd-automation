@@ -266,6 +266,21 @@ npm run test:watch    # Watch mode
 npm run test:coverage # Coverage report
 ```
 
+### Pre-commit Hooks
+
+This project uses Husky and lint-staged to ensure code quality before commits:
+
+- **ESLint** - Automatically fixes linting issues on staged files
+- **Vitest** - Runs tests related to changed files
+
+The hooks run automatically on `git commit`. To bypass if needed:
+
+```bash
+git commit --no-verify
+```
+
+**Note:** Only bypass hooks when absolutely necessary (e.g., work-in-progress commits).
+
 ### Local Testing
 Before publishing, test the package with a real Vue project:
 
