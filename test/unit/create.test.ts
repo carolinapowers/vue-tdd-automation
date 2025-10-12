@@ -71,23 +71,21 @@ describe('createComponent', () => {
   });
 
   describe('error handling', () => {
-    it('should throw error if script execution fails', async () => {
+    it('should throw error if script execution fails', () => {
       vi.mocked(execSync).mockImplementation(() => {
         throw new Error('Script not found');
       });
 
-      await expect(createComponent('MyButton')).rejects.toThrow(
-        "Failed to create component. Make sure you've run 'vue-tdd init' first."
-      );
+      expect(() => createComponent('MyButton')).toThrow('Script not found');
     });
 
-    it('should throw error if scripts directory does not exist', async () => {
+    it('should throw error if scripts directory does not exist', () => {
       vi.mocked(execSync).mockImplementation(() => {
         throw new Error('ENOENT: no such file or directory');
       });
 
-      await expect(createComponent('MyButton')).rejects.toThrow(
-        "Failed to create component. Make sure you've run 'vue-tdd init' first."
+      expect(() => createComponent('MyButton')).toThrow(
+        "Creation script not found at /mock/project/scripts/create-tdd-component.js. Make sure you've run 'vue-tdd init' first."
       );
     });
 

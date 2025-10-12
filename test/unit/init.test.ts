@@ -26,7 +26,7 @@ describe('initTDD', () => {
   });
 
   describe('validation', () => {
-    it('should throw error if no package.json found', async () => {
+    it('should throw error if no package.json found', () => {
       // Mock existsSync to return true for templates dir but false for package.json
       vi.mocked(fs.existsSync).mockImplementation((filePath: any) => {
         const path = filePath.toString();
@@ -37,7 +37,7 @@ describe('initTDD', () => {
         return false;
       });
 
-      await expect(initTDD()).rejects.toThrow('No package.json found');
+      expect(() => initTDD()).toThrow('No package.json found');
     });
 
     it('should warn if Vue is not in dependencies', async () => {

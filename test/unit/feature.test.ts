@@ -74,34 +74,30 @@ describe('createFeature', () => {
   });
 
   describe('error handling', () => {
-    it('should throw error if script execution fails', async () => {
+    it('should throw error if script execution fails', () => {
       vi.mocked(execSync).mockImplementation(() => {
         throw new Error('Script not found');
       });
 
-      await expect(createFeature()).rejects.toThrow(
-        "Failed to start feature wizard. Make sure you've run 'vue-tdd init' first."
-      );
+      expect(() => createFeature()).toThrow('Script not found');
     });
 
-    it('should throw error if scripts directory does not exist', async () => {
+    it('should throw error if scripts directory does not exist', () => {
       vi.mocked(execSync).mockImplementation(() => {
         throw new Error('ENOENT: no such file or directory');
       });
 
-      await expect(createFeature()).rejects.toThrow(
-        "Failed to start feature wizard. Make sure you've run 'vue-tdd init' first."
+      expect(() => createFeature()).toThrow(
+        "Feature wizard script not found at /mock/project/scripts/tdd-feature.js. Make sure you've run 'vue-tdd init' first."
       );
     });
 
-    it('should handle script execution with permission errors', async () => {
+    it('should handle script execution with permission errors', () => {
       vi.mocked(execSync).mockImplementation(() => {
         throw new Error('EACCES: permission denied');
       });
 
-      await expect(createFeature()).rejects.toThrow(
-        "Failed to start feature wizard. Make sure you've run 'vue-tdd init' first."
-      );
+      expect(() => createFeature()).toThrow('EACCES: permission denied');
     });
 
     it('should handle script path with spaces correctly', async () => {
