@@ -7,6 +7,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import chalk from 'chalk';
+import { parseJson, isPackageJson } from './json-utils.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -24,14 +25,7 @@ interface FileMapping {
   required?: boolean;
 }
 
-interface PackageJson {
-  dependencies?: Record<string, string>;
-  devDependencies?: Record<string, string>;
-  scripts?: Record<string, string>;
-  [key: string]: any;
-}
-
-export async function initTDD(options: InitOptions = {}): Promise<void> {
+export function initTDD(options: InitOptions = {}): void {
   const {
     workflows = true,
     docs = true,
@@ -54,7 +48,7 @@ export async function initTDD(options: InitOptions = {}): Promise<void> {
     throw new Error('No package.json found. Are you in a Vue project directory?');
   }
 
-  const packageJson: PackageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
+  const packageJson = parseJson(fs.readFileSync(packageJsonPath, 'utf-8'), isPackageJson);
   if (!packageJson.dependencies?.vue && !packageJson.devDependencies?.vue) {
     console.log(chalk.yellow('⚠️  Warning: Vue not found in dependencies. Continuing anyway...'));
   }
@@ -142,7 +136,7 @@ export async function initTDD(options: InitOptions = {}): Promise<void> {
   console.log(chalk.blue(`\n📊 Summary: ${copiedCount} files copied, ${skippedCount} skipped\n`));
 
   // Update package.json with test scripts
-  await updatePackageJson(packageJsonPath);
+  updatePackageJson(packageJsonPath);
 
   // Install dependencies
   console.log(chalk.blue('📦 Required dependencies:\n'));
@@ -167,8 +161,8 @@ export async function initTDD(options: InitOptions = {}): Promise<void> {
   console.log(chalk.cyan('npm install -D @testing-library/jest-dom @testing-library/user-event @testing-library/vue @types/node @vitejs/plugin-vue @vue/test-utils @vitest/ui @vitest/coverage-v8 happy-dom vitest\n'));
 }
 
-async function updatePackageJson(packageJsonPath: string): Promise<void> {
-  const packageJson: PackageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
+function updatePackageJson(packageJsonPath: string): void {
+  const packageJson = parseJson(fs.readFileSync(packageJsonPath, 'utf-8'), isPackageJson);
 
   // Add scripts if they don't exist
   const scriptsToAdd: Record<string, string> = {

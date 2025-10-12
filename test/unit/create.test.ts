@@ -22,7 +22,7 @@ describe('createComponent', () => {
     it('should execute create script with component name', async () => {
       const execSyncSpy = vi.mocked(execSync).mockImplementation(() => Buffer.from(''));
 
-      await createComponent('MyButton');
+      createComponent('MyButton');
 
       expect(execSyncSpy).toHaveBeenCalledWith(
         expect.stringContaining('create-tdd-component.js'),
@@ -36,58 +36,56 @@ describe('createComponent', () => {
     it('should pass component name to script', async () => {
       const execSyncSpy = vi.mocked(execSync).mockImplementation(() => Buffer.from(''));
 
-      await createComponent('UserProfile');
+      createComponent('UserProfile');
 
-      const call = execSyncSpy.mock.calls[0]?.[0] as string;
+      const call = execSyncSpy.mock.calls[0]?.[0];
       expect(call).toContain('UserProfile');
     });
 
     it('should use provided description', async () => {
       const execSyncSpy = vi.mocked(execSync).mockImplementation(() => Buffer.from(''));
 
-      await createComponent('MyButton', 'A reusable button component');
+      createComponent('MyButton', 'A reusable button component');
 
-      const call = execSyncSpy.mock.calls[0]?.[0] as string;
+      const call = execSyncSpy.mock.calls[0]?.[0];
       expect(call).toContain('A reusable button component');
     });
 
     it('should use default description when none provided', async () => {
       const execSyncSpy = vi.mocked(execSync).mockImplementation(() => Buffer.from(''));
 
-      await createComponent('MyButton');
+      createComponent('MyButton');
 
-      const call = execSyncSpy.mock.calls[0]?.[0] as string;
+      const call = execSyncSpy.mock.calls[0]?.[0];
       expect(call).toContain('Component: MyButton');
     });
 
     it('should use empty string as default description', async () => {
       const execSyncSpy = vi.mocked(execSync).mockImplementation(() => Buffer.from(''));
 
-      await createComponent('MyButton', '');
+      createComponent('MyButton', '');
 
-      const call = execSyncSpy.mock.calls[0]?.[0] as string;
+      const call = execSyncSpy.mock.calls[0]?.[0];
       expect(call).toContain('Component: MyButton');
     });
   });
 
   describe('error handling', () => {
-    it('should throw error if script execution fails', async () => {
+    it('should throw error if script execution fails', () => {
       vi.mocked(execSync).mockImplementation(() => {
         throw new Error('Script not found');
       });
 
-      await expect(createComponent('MyButton')).rejects.toThrow(
-        "Failed to create component. Make sure you've run 'vue-tdd init' first."
-      );
+      expect(() => createComponent('MyButton')).toThrow('Script not found');
     });
 
-    it('should throw error if scripts directory does not exist', async () => {
+    it('should throw error if scripts directory does not exist', () => {
       vi.mocked(execSync).mockImplementation(() => {
         throw new Error('ENOENT: no such file or directory');
       });
 
-      await expect(createComponent('MyButton')).rejects.toThrow(
-        "Failed to create component. Make sure you've run 'vue-tdd init' first."
+      expect(() => createComponent('MyButton')).toThrow(
+        "Creation script not found at /mock/project/scripts/create-tdd-component.js. Make sure you've run 'vue-tdd init' first."
       );
     });
 
@@ -96,9 +94,9 @@ describe('createComponent', () => {
       vi.spyOn(process, 'cwd').mockReturnValue(mockCwdWithSpaces);
       const execSyncSpy = vi.mocked(execSync).mockImplementation(() => Buffer.from(''));
 
-      await createComponent('MyButton');
+      createComponent('MyButton');
 
-      const call = execSyncSpy.mock.calls[0]?.[0] as string;
+      const call = execSyncSpy.mock.calls[0]?.[0];
       // Check that the path is properly quoted
       expect(call).toMatch(/node ".*create-tdd-component\.js"/);
     });
@@ -108,16 +106,16 @@ describe('createComponent', () => {
     it('should construct correct script path', async () => {
       const execSyncSpy = vi.mocked(execSync).mockImplementation(() => Buffer.from(''));
 
-      await createComponent('MyButton');
+      createComponent('MyButton');
 
-      const call = execSyncSpy.mock.calls[0]?.[0] as string;
+      const call = execSyncSpy.mock.calls[0]?.[0];
       expect(call).toContain(path.join('scripts', 'create-tdd-component.js'));
     });
 
     it('should execute script in current working directory', async () => {
       const execSyncSpy = vi.mocked(execSync).mockImplementation(() => Buffer.from(''));
 
-      await createComponent('MyButton');
+      createComponent('MyButton');
 
       expect(execSyncSpy).toHaveBeenCalledWith(
         expect.any(String),
@@ -128,7 +126,7 @@ describe('createComponent', () => {
     it('should use inherit stdio for real-time output', async () => {
       const execSyncSpy = vi.mocked(execSync).mockImplementation(() => Buffer.from(''));
 
-      await createComponent('MyButton');
+      createComponent('MyButton');
 
       expect(execSyncSpy).toHaveBeenCalledWith(
         expect.any(String),
@@ -141,27 +139,27 @@ describe('createComponent', () => {
     it('should handle PascalCase component names', async () => {
       const execSyncSpy = vi.mocked(execSync).mockImplementation(() => Buffer.from(''));
 
-      await createComponent('MyAwesomeButton');
+      createComponent('MyAwesomeButton');
 
-      const call = execSyncSpy.mock.calls[0]?.[0] as string;
+      const call = execSyncSpy.mock.calls[0]?.[0];
       expect(call).toContain('MyAwesomeButton');
     });
 
     it('should handle kebab-case component names', async () => {
       const execSyncSpy = vi.mocked(execSync).mockImplementation(() => Buffer.from(''));
 
-      await createComponent('my-awesome-button');
+      createComponent('my-awesome-button');
 
-      const call = execSyncSpy.mock.calls[0]?.[0] as string;
+      const call = execSyncSpy.mock.calls[0]?.[0];
       expect(call).toContain('my-awesome-button');
     });
 
     it('should handle single word component names', async () => {
       const execSyncSpy = vi.mocked(execSync).mockImplementation(() => Buffer.from(''));
 
-      await createComponent('Button');
+      createComponent('Button');
 
-      const call = execSyncSpy.mock.calls[0]?.[0] as string;
+      const call = execSyncSpy.mock.calls[0]?.[0];
       expect(call).toContain('Button');
     });
   });
@@ -170,25 +168,25 @@ describe('createComponent', () => {
     it('should handle descriptions with special characters', async () => {
       const execSyncSpy = vi.mocked(execSync).mockImplementation(() => Buffer.from(''));
 
-      await createComponent('MyButton', 'A button with "quotes" & special <chars>');
+      createComponent('MyButton', 'A button with "quotes" & special <chars>');
 
-      const call = execSyncSpy.mock.calls[0]?.[0] as string;
+      const call = execSyncSpy.mock.calls[0]?.[0];
       expect(call).toContain('A button with "quotes" & special <chars>');
     });
 
     it('should handle multiline descriptions', async () => {
       const execSyncSpy = vi.mocked(execSync).mockImplementation(() => Buffer.from(''));
 
-      await createComponent('MyButton', 'Line 1\nLine 2\nLine 3');
+      createComponent('MyButton', 'Line 1\nLine 2\nLine 3');
 
-      const call = execSyncSpy.mock.calls[0]?.[0] as string;
+      const call = execSyncSpy.mock.calls[0]?.[0];
       expect(call).toContain('Line 1\nLine 2\nLine 3');
     });
 
     it('should handle empty string description', async () => {
       const execSyncSpy = vi.mocked(execSync).mockImplementation(() => Buffer.from(''));
 
-      await createComponent('MyButton', '');
+      createComponent('MyButton', '');
 
       expect(execSyncSpy).toHaveBeenCalled();
     });

@@ -10,6 +10,7 @@ import chalk from 'chalk';
 import { initTDD } from '../lib/init.js';
 import { createComponent } from '../lib/create.js';
 import { createFeature } from '../lib/feature.js';
+import { parseJson, isPackageJsonWithVersion } from '../lib/json-utils.js';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { readFileSync } from 'fs';
@@ -18,8 +19,9 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // Read package.json for version (from project root, up 2 levels from dist/bin)
-const packageJson = JSON.parse(
-  readFileSync(join(__dirname, '../../package.json'), 'utf-8')
+const packageJson = parseJson(
+  readFileSync(join(__dirname, '../../package.json'), 'utf-8'),
+  isPackageJsonWithVersion
 );
 
 interface InitOptions {
@@ -46,10 +48,10 @@ program
   .option('--no-docs', 'Skip documentation files')
   .option('--no-scripts', 'Skip component creation scripts')
   .option('--force', 'Overwrite existing files')
-  .action(async (options: InitOptions) => {
+  .action((options: InitOptions) => {
     console.log(chalk.cyan.bold('\n🤖 Initializing Vue TDD Workflow...\n'));
     try {
-      await initTDD(options);
+      initTDD(options);
       console.log(chalk.green.bold('\n✅ TDD workflow initialized successfully!\n'));
       console.log(chalk.yellow('Next steps:'));
       console.log('  1. Run ' + chalk.cyan('npm install') + ' to install dependencies');
@@ -69,10 +71,10 @@ program
   .command('create <name>')
   .description('Create a new component with TDD tests')
   .argument('[description]', 'Component description')
-  .action(async (name: string, description?: string) => {
+  .action((name: string, description?: string) => {
     console.log(chalk.cyan.bold(`\n🎨 Creating ${name} component...\n`));
     try {
-      await createComponent(name, description);
+      createComponent(name, description);
       console.log(chalk.green.bold('\n✅ Component created successfully!\n'));
       console.log(chalk.yellow('Next steps:'));
       console.log('  1. Run ' + chalk.cyan('npm run tdd') + ' to start test watch mode');
@@ -91,10 +93,10 @@ program
   .command('feature')
   .description('Interactive feature creation wizard')
   .option('--no-issue', 'Skip GitHub issue creation')
-  .action(async (options: FeatureOptions) => {
+  .action((options: FeatureOptions) => {
     console.log(chalk.cyan.bold('\n🚀 Feature Creation Wizard\n'));
     try {
-      await createFeature(options);
+      createFeature(options);
     } catch (error) {
       console.error(chalk.red.bold('\n❌ Error:'), (error as Error).message);
       if (process.env.DEBUG) {
