@@ -17,11 +17,11 @@ export function parseJson<T extends object>(
   const parsed: unknown = JSON.parse(content);
 
   if (typeof parsed !== 'object' || parsed === null) {
-    throw new Error('JSON parse result is not an object');
+    throw new Error(`JSON parse result is not an object: got ${typeof parsed}`);
   }
 
   if (validator && !validator(parsed)) {
-    throw new Error('JSON validation failed');
+    throw new Error('JSON validation failed: parsed content does not match expected schema');
   }
 
   return parsed as T;
@@ -49,6 +49,23 @@ export function isPackageJson(obj: unknown): obj is {
   devDependencies?: Record<string, string>;
   scripts?: Record<string, string>;
 } {
-  // All fields are optional, so just verify it's an object
-  return typeof obj === 'object' && obj !== null;
+  if (typeof obj !== 'object' || obj === null) return false;
+
+  const pkg = obj as Record<string, unknown>;
+
+  // If properties exist, validate they're objects
+  if (pkg.dependencies !== undefined &&
+      (typeof pkg.dependencies !== 'object' || pkg.dependencies === null)) {
+    return false;
+  }
+  if (pkg.devDependencies !== undefined &&
+      (typeof pkg.devDependencies !== 'object' || pkg.devDependencies === null)) {
+    return false;
+  }
+  if (pkg.scripts !== undefined &&
+      (typeof pkg.scripts !== 'object' || pkg.scripts === null)) {
+    return false;
+  }
+
+  return true;
 }
