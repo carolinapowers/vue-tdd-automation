@@ -1,5 +1,4 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { execSync } from 'child_process';
 
 // Mock dependencies
 vi.mock('../../lib/init', () => ({
@@ -63,7 +62,7 @@ describe('CLI Integration', () => {
     it('should call initTDD with correct options', async () => {
       const { initTDD } = await import('../../lib/init');
 
-      await initTDD({ workflows: true, docs: true, force: false });
+      initTDD({ workflows: true, docs: true, force: false });
 
       expect(initTDD).toHaveBeenCalledWith({
         workflows: true,
@@ -75,7 +74,7 @@ describe('CLI Integration', () => {
     it('should support --no-workflows flag', async () => {
       const { initTDD } = await import('../../lib/init');
 
-      await initTDD({ workflows: false, docs: true, force: false });
+      initTDD({ workflows: false, docs: true, force: false });
 
       expect(initTDD).toHaveBeenCalledWith(
         expect.objectContaining({ workflows: false })
@@ -85,7 +84,7 @@ describe('CLI Integration', () => {
     it('should support --no-docs flag', async () => {
       const { initTDD } = await import('../../lib/init');
 
-      await initTDD({ workflows: true, docs: false, force: false });
+      initTDD({ workflows: true, docs: false, force: false });
 
       expect(initTDD).toHaveBeenCalledWith(
         expect.objectContaining({ docs: false })
@@ -95,7 +94,7 @@ describe('CLI Integration', () => {
     it('should support --force flag', async () => {
       const { initTDD } = await import('../../lib/init');
 
-      await initTDD({ workflows: true, docs: true, force: true });
+      initTDD({ workflows: true, docs: true, force: true });
 
       expect(initTDD).toHaveBeenCalledWith(
         expect.objectContaining({ force: true })
@@ -114,7 +113,7 @@ describe('CLI Integration', () => {
     it('should call createComponent with name', async () => {
       const { createComponent } = await import('../../lib/create');
 
-      await createComponent('MyButton');
+      createComponent('MyButton');
 
       expect(createComponent).toHaveBeenCalledWith('MyButton');
     });
@@ -122,7 +121,7 @@ describe('CLI Integration', () => {
     it('should call createComponent with name and description', async () => {
       const { createComponent } = await import('../../lib/create');
 
-      await createComponent('MyButton', 'A reusable button');
+      createComponent('MyButton', 'A reusable button');
 
       expect(createComponent).toHaveBeenCalledWith('MyButton', 'A reusable button');
     });
@@ -139,7 +138,7 @@ describe('CLI Integration', () => {
     it('should call createFeature with default options', async () => {
       const { createFeature } = await import('../../lib/feature');
 
-      await createFeature();
+      createFeature();
 
       expect(createFeature).toHaveBeenCalled();
     });
@@ -147,7 +146,7 @@ describe('CLI Integration', () => {
     it('should call createFeature with issue option', async () => {
       const { createFeature } = await import('../../lib/feature');
 
-      await createFeature({ issue: true });
+      createFeature({ issue: true });
 
       expect(createFeature).toHaveBeenCalledWith({ issue: true });
     });
@@ -155,7 +154,7 @@ describe('CLI Integration', () => {
     it('should support --no-issue flag', async () => {
       const { createFeature } = await import('../../lib/feature');
 
-      await createFeature({ issue: false });
+      createFeature({ issue: false });
 
       expect(createFeature).toHaveBeenCalledWith(
         expect.objectContaining({ issue: false })

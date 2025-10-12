@@ -9,7 +9,7 @@ export interface FeatureOptions {
   issue?: boolean;
 }
 
-export async function createFeature(options: FeatureOptions = {}): Promise<void> {
+export function createFeature(_options: FeatureOptions = {}): void {
   const cwd = process.cwd();
 
   // Check if scripts exist
@@ -21,6 +21,12 @@ export async function createFeature(options: FeatureOptions = {}): Promise<void>
       stdio: 'inherit'
     });
   } catch (error) {
+    if (error instanceof Error) {
+      if (error.message.includes('ENOENT')) {
+        throw new Error(`Feature wizard script not found at ${scriptPath}. Make sure you've run 'vue-tdd init' first.`);
+      }
+      throw error;
+    }
     throw new Error(`Failed to start feature wizard. Make sure you've run 'vue-tdd init' first.`);
   }
 }

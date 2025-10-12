@@ -22,7 +22,7 @@ describe('createFeature', () => {
     it('should execute feature wizard script', async () => {
       const execSyncSpy = vi.mocked(execSync).mockImplementation(() => Buffer.from(''));
 
-      await createFeature();
+      createFeature();
 
       expect(execSyncSpy).toHaveBeenCalledWith(
         expect.stringContaining('tdd-feature.js'),
@@ -36,7 +36,7 @@ describe('createFeature', () => {
     it('should execute script with default options', async () => {
       const execSyncSpy = vi.mocked(execSync).mockImplementation(() => Buffer.from(''));
 
-      await createFeature();
+      createFeature();
 
       expect(execSyncSpy).toHaveBeenCalledTimes(1);
       expect(execSyncSpy).toHaveBeenCalledWith(
@@ -51,7 +51,7 @@ describe('createFeature', () => {
     it('should execute script when issue option is provided', async () => {
       const execSyncSpy = vi.mocked(execSync).mockImplementation(() => Buffer.from(''));
 
-      await createFeature({ issue: true });
+      createFeature({ issue: true });
 
       expect(execSyncSpy).toHaveBeenCalled();
     });
@@ -59,7 +59,7 @@ describe('createFeature', () => {
     it('should execute script when issue option is false', async () => {
       const execSyncSpy = vi.mocked(execSync).mockImplementation(() => Buffer.from(''));
 
-      await createFeature({ issue: false });
+      createFeature({ issue: false });
 
       expect(execSyncSpy).toHaveBeenCalled();
     });
@@ -67,7 +67,7 @@ describe('createFeature', () => {
     it('should handle empty options object', async () => {
       const execSyncSpy = vi.mocked(execSync).mockImplementation(() => Buffer.from(''));
 
-      await createFeature({});
+      createFeature({});
 
       expect(execSyncSpy).toHaveBeenCalled();
     });
@@ -109,7 +109,7 @@ describe('createFeature', () => {
       vi.spyOn(process, 'cwd').mockReturnValue(mockCwdWithSpaces);
       const execSyncSpy = vi.mocked(execSync).mockImplementation(() => Buffer.from(''));
 
-      await createFeature();
+      createFeature();
 
       const call = execSyncSpy.mock.calls[0]?.[0];
       // Check that the path is properly quoted
@@ -121,7 +121,7 @@ describe('createFeature', () => {
     it('should construct correct script path', async () => {
       const execSyncSpy = vi.mocked(execSync).mockImplementation(() => Buffer.from(''));
 
-      await createFeature();
+      createFeature();
 
       const call = execSyncSpy.mock.calls[0]?.[0];
       expect(call).toContain(path.join('scripts', 'tdd-feature.js'));
@@ -130,7 +130,7 @@ describe('createFeature', () => {
     it('should execute script in current working directory', async () => {
       const execSyncSpy = vi.mocked(execSync).mockImplementation(() => Buffer.from(''));
 
-      await createFeature();
+      createFeature();
 
       expect(execSyncSpy).toHaveBeenCalledWith(
         expect.any(String),
@@ -141,7 +141,7 @@ describe('createFeature', () => {
     it('should use inherit stdio for interactive wizard', async () => {
       const execSyncSpy = vi.mocked(execSync).mockImplementation(() => Buffer.from(''));
 
-      await createFeature();
+      createFeature();
 
       expect(execSyncSpy).toHaveBeenCalledWith(
         expect.any(String),
@@ -154,7 +154,7 @@ describe('createFeature', () => {
     it('should handle undefined options parameter', async () => {
       const execSyncSpy = vi.mocked(execSync).mockImplementation(() => Buffer.from(''));
 
-      await createFeature(undefined);
+      createFeature(undefined);
 
       expect(execSyncSpy).toHaveBeenCalled();
     });
@@ -164,7 +164,7 @@ describe('createFeature', () => {
       const options = { issue: true };
       const originalOptions = { ...options };
 
-      await createFeature(options);
+      createFeature(options);
 
       expect(options).toEqual(originalOptions);
     });
@@ -172,7 +172,7 @@ describe('createFeature', () => {
     it('should handle issue option as undefined', async () => {
       const execSyncSpy = vi.mocked(execSync).mockImplementation(() => Buffer.from(''));
 
-      await createFeature({ issue: undefined });
+      createFeature({ issue: undefined });
 
       expect(execSyncSpy).toHaveBeenCalled();
     });
@@ -184,7 +184,7 @@ describe('createFeature', () => {
       vi.spyOn(process, 'cwd').mockReturnValue(testCwd);
       const execSyncSpy = vi.mocked(execSync).mockImplementation(() => Buffer.from(''));
 
-      await createFeature();
+      createFeature();
 
       expect(execSyncSpy).toHaveBeenCalledWith(
         expect.any(String),
@@ -195,7 +195,7 @@ describe('createFeature', () => {
     it('should construct path relative to cwd', async () => {
       const execSyncSpy = vi.mocked(execSync).mockImplementation(() => Buffer.from(''));
 
-      await createFeature();
+      createFeature();
 
       const call = execSyncSpy.mock.calls[0]?.[0];
       expect(call).toContain(path.join(mockCwd, 'scripts', 'tdd-feature.js'));
@@ -206,7 +206,7 @@ describe('createFeature', () => {
     it('should invoke script with node', async () => {
       const execSyncSpy = vi.mocked(execSync).mockImplementation(() => Buffer.from(''));
 
-      await createFeature();
+      createFeature();
 
       const call = execSyncSpy.mock.calls[0]?.[0];
       expect(call).toMatch(/^node /);
@@ -215,7 +215,7 @@ describe('createFeature', () => {
     it('should quote script path', async () => {
       const execSyncSpy = vi.mocked(execSync).mockImplementation(() => Buffer.from(''));
 
-      await createFeature();
+      createFeature();
 
       const call = execSyncSpy.mock.calls[0]?.[0];
       expect(call).toMatch(/node ".*tdd-feature\.js"/);

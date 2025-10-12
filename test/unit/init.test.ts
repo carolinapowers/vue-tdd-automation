@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import fs from 'fs';
-import path from 'path';
 import { initTDD } from '../../lib/init';
 
 // Mock fs module
@@ -51,7 +50,7 @@ describe('initTDD', () => {
       vi.mocked(fs.mkdirSync).mockImplementation(() => '');
       vi.mocked(fs.writeFileSync).mockImplementation(() => {});
 
-      await initTDD({ workflows: false, docs: false });
+      initTDD({ workflows: false, docs: false });
 
       expect(consoleLogSpy).toHaveBeenCalledWith(
         expect.stringContaining('Warning: Vue not found in dependencies')
@@ -80,7 +79,7 @@ describe('initTDD', () => {
     });
 
     it('should copy required files by default', async () => {
-      await initTDD();
+      initTDD();
 
       expect(fs.copyFileSync).toHaveBeenCalled();
       expect(fs.mkdirSync).toHaveBeenCalled();
@@ -88,12 +87,12 @@ describe('initTDD', () => {
 
     it('should skip existing files when force is false', async () => {
       const consoleLogSpy = vi.spyOn(console, 'log');
-      vi.mocked(fs.existsSync).mockImplementation((filePath) => {
+      vi.mocked(fs.existsSync).mockImplementation(() => {
         // package.json exists, templates exist, but destination files also exist
         return true;
       });
 
-      await initTDD({ force: false });
+      initTDD({ force: false });
 
       expect(consoleLogSpy).toHaveBeenCalledWith(
         expect.stringContaining('Skipped (exists)')
@@ -103,7 +102,7 @@ describe('initTDD', () => {
     it('should overwrite existing files when force is true', async () => {
       vi.mocked(fs.existsSync).mockReturnValue(true);
 
-      await initTDD({ force: true });
+      initTDD({ force: true });
 
       expect(fs.copyFileSync).toHaveBeenCalled();
     });
@@ -111,27 +110,27 @@ describe('initTDD', () => {
     it('should copy workflow files when workflows option is true', async () => {
       const copyFileSyncSpy = vi.mocked(fs.copyFileSync);
 
-      await initTDD({ workflows: true, docs: false });
+      initTDD({ workflows: true, docs: false });
 
       // Check that some files were copied (we can't easily check specific files in this mock setup)
       expect(copyFileSyncSpy).toHaveBeenCalled();
     });
 
     it('should skip workflow files when workflows option is false', async () => {
-      await initTDD({ workflows: false, docs: false });
+      initTDD({ workflows: false, docs: false });
 
       // Just verify it completes without error
       expect(fs.copyFileSync).toHaveBeenCalled();
     });
 
     it('should copy documentation files when docs option is true', async () => {
-      await initTDD({ docs: true, workflows: false });
+      initTDD({ docs: true, workflows: false });
 
       expect(fs.copyFileSync).toHaveBeenCalled();
     });
 
     it('should skip documentation files when docs option is false', async () => {
-      await initTDD({ docs: false, workflows: false });
+      initTDD({ docs: false, workflows: false });
 
       expect(fs.copyFileSync).toHaveBeenCalled();
     });
@@ -139,7 +138,7 @@ describe('initTDD', () => {
     it('should create directories if they do not exist', async () => {
       const mkdirSyncSpy = vi.mocked(fs.mkdirSync);
 
-      await initTDD();
+      initTDD();
 
       expect(mkdirSyncSpy).toHaveBeenCalled();
       expect(mkdirSyncSpy).toHaveBeenCalledWith(
@@ -162,7 +161,7 @@ describe('initTDD', () => {
         JSON.stringify(mockPackageJson)
       );
 
-      await initTDD();
+      initTDD();
 
       expect(writeFileSyncSpy).toHaveBeenCalled();
       const writtenContent = writeFileSyncSpy.mock.calls[0]?.[1] as string;
@@ -190,7 +189,7 @@ describe('initTDD', () => {
         JSON.stringify(packageWithScripts)
       );
 
-      await initTDD();
+      initTDD();
 
       expect(consoleLogSpy).toHaveBeenCalled();
     });
@@ -208,7 +207,7 @@ describe('initTDD', () => {
         JSON.stringify(packageWithExtra)
       );
 
-      await initTDD();
+      initTDD();
 
       const writtenContent = writeFileSyncSpy.mock.calls[0]?.[1] as string;
       const updatedPackageJson = JSON.parse(writtenContent);
@@ -233,7 +232,7 @@ describe('initTDD', () => {
     it('should log installation progress', async () => {
       const consoleLogSpy = vi.spyOn(console, 'log');
 
-      await initTDD();
+      initTDD();
 
       expect(consoleLogSpy).toHaveBeenCalledWith(
         expect.stringContaining('Installing TDD infrastructure')
@@ -243,7 +242,7 @@ describe('initTDD', () => {
     it('should log summary of copied files', async () => {
       const consoleLogSpy = vi.spyOn(console, 'log');
 
-      await initTDD();
+      initTDD();
 
       expect(consoleLogSpy).toHaveBeenCalledWith(
         expect.stringContaining('Summary:')
@@ -253,7 +252,7 @@ describe('initTDD', () => {
     it('should display required dependencies', async () => {
       const consoleLogSpy = vi.spyOn(console, 'log');
 
-      await initTDD();
+      initTDD();
 
       expect(consoleLogSpy).toHaveBeenCalledWith(
         expect.stringContaining('Required dependencies')
