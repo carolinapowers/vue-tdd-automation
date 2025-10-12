@@ -197,7 +197,11 @@ describe('CLI Integration', () => {
       const { default: packageJson } = await import('../../package.json');
 
       expect(packageJson.files).toBeDefined();
-      expect(packageJson.files).toContain('dist');
+      // Check for dist files (now uses specific patterns)
+      const hasDistFiles = packageJson.files.some((file: string) =>
+        file.startsWith('dist/bin') || file.startsWith('dist/lib')
+      );
+      expect(hasDistFiles).toBe(true);
       expect(packageJson.files).toContain('templates');
       expect(packageJson.files).toContain('README.md');
       expect(packageJson.files).toContain('LICENSE');

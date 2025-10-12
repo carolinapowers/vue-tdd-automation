@@ -28,7 +28,15 @@ describe('initTDD', () => {
 
   describe('validation', () => {
     it('should throw error if no package.json found', async () => {
-      vi.mocked(fs.existsSync).mockReturnValue(false);
+      // Mock existsSync to return true for templates dir but false for package.json
+      vi.mocked(fs.existsSync).mockImplementation((filePath: any) => {
+        const path = filePath.toString();
+        // Templates directory exists, but package.json doesn't
+        if (path.includes('templates')) {
+          return true;
+        }
+        return false;
+      });
 
       await expect(initTDD()).rejects.toThrow('No package.json found');
     });
