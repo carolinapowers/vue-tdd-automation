@@ -38,7 +38,7 @@ describe('createComponent', () => {
 
       await createComponent('UserProfile');
 
-      const call = execSyncSpy.mock.calls[0]?.[0] as string;
+      const call = execSyncSpy.mock.calls[0]?.[0];
       expect(call).toContain('UserProfile');
     });
 
@@ -47,7 +47,7 @@ describe('createComponent', () => {
 
       await createComponent('MyButton', 'A reusable button component');
 
-      const call = execSyncSpy.mock.calls[0]?.[0] as string;
+      const call = execSyncSpy.mock.calls[0]?.[0];
       expect(call).toContain('A reusable button component');
     });
 
@@ -56,7 +56,7 @@ describe('createComponent', () => {
 
       await createComponent('MyButton');
 
-      const call = execSyncSpy.mock.calls[0]?.[0] as string;
+      const call = execSyncSpy.mock.calls[0]?.[0];
       expect(call).toContain('Component: MyButton');
     });
 
@@ -65,7 +65,7 @@ describe('createComponent', () => {
 
       await createComponent('MyButton', '');
 
-      const call = execSyncSpy.mock.calls[0]?.[0] as string;
+      const call = execSyncSpy.mock.calls[0]?.[0];
       expect(call).toContain('Component: MyButton');
     });
   });
@@ -98,7 +98,7 @@ describe('createComponent', () => {
 
       await createComponent('MyButton');
 
-      const call = execSyncSpy.mock.calls[0]?.[0] as string;
+      const call = execSyncSpy.mock.calls[0]?.[0];
       // Check that the path is properly quoted
       expect(call).toMatch(/node ".*create-tdd-component\.js"/);
     });
@@ -110,7 +110,7 @@ describe('createComponent', () => {
 
       await createComponent('MyButton');
 
-      const call = execSyncSpy.mock.calls[0]?.[0] as string;
+      const call = execSyncSpy.mock.calls[0]?.[0];
       expect(call).toContain(path.join('scripts', 'create-tdd-component.js'));
     });
 
@@ -143,7 +143,7 @@ describe('createComponent', () => {
 
       await createComponent('MyAwesomeButton');
 
-      const call = execSyncSpy.mock.calls[0]?.[0] as string;
+      const call = execSyncSpy.mock.calls[0]?.[0];
       expect(call).toContain('MyAwesomeButton');
     });
 
@@ -152,7 +152,7 @@ describe('createComponent', () => {
 
       await createComponent('my-awesome-button');
 
-      const call = execSyncSpy.mock.calls[0]?.[0] as string;
+      const call = execSyncSpy.mock.calls[0]?.[0];
       expect(call).toContain('my-awesome-button');
     });
 
@@ -161,7 +161,7 @@ describe('createComponent', () => {
 
       await createComponent('Button');
 
-      const call = execSyncSpy.mock.calls[0]?.[0] as string;
+      const call = execSyncSpy.mock.calls[0]?.[0];
       expect(call).toContain('Button');
     });
   });
@@ -172,7 +172,7 @@ describe('createComponent', () => {
 
       await createComponent('MyButton', 'A button with "quotes" & special <chars>');
 
-      const call = execSyncSpy.mock.calls[0]?.[0] as string;
+      const call = execSyncSpy.mock.calls[0]?.[0];
       expect(call).toContain('A button with "quotes" & special <chars>');
     });
 
@@ -181,7 +181,7 @@ describe('createComponent', () => {
 
       await createComponent('MyButton', 'Line 1\nLine 2\nLine 3');
 
-      const call = execSyncSpy.mock.calls[0]?.[0] as string;
+      const call = execSyncSpy.mock.calls[0]?.[0];
       expect(call).toContain('Line 1\nLine 2\nLine 3');
     });
 

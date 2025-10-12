@@ -111,7 +111,7 @@ describe('createFeature', () => {
 
       await createFeature();
 
-      const call = execSyncSpy.mock.calls[0]?.[0] as string;
+      const call = execSyncSpy.mock.calls[0]?.[0];
       // Check that the path is properly quoted
       expect(call).toMatch(/node ".*tdd-feature\.js"/);
     });
@@ -123,7 +123,7 @@ describe('createFeature', () => {
 
       await createFeature();
 
-      const call = execSyncSpy.mock.calls[0]?.[0] as string;
+      const call = execSyncSpy.mock.calls[0]?.[0];
       expect(call).toContain(path.join('scripts', 'tdd-feature.js'));
     });
 
@@ -197,7 +197,7 @@ describe('createFeature', () => {
 
       await createFeature();
 
-      const call = execSyncSpy.mock.calls[0]?.[0] as string;
+      const call = execSyncSpy.mock.calls[0]?.[0];
       expect(call).toContain(path.join(mockCwd, 'scripts', 'tdd-feature.js'));
     });
   });
@@ -208,7 +208,7 @@ describe('createFeature', () => {
 
       await createFeature();
 
-      const call = execSyncSpy.mock.calls[0]?.[0] as string;
+      const call = execSyncSpy.mock.calls[0]?.[0];
       expect(call).toMatch(/^node /);
     });
 
@@ -217,7 +217,7 @@ describe('createFeature', () => {
 
       await createFeature();
 
-      const call = execSyncSpy.mock.calls[0]?.[0] as string;
+      const call = execSyncSpy.mock.calls[0]?.[0];
       expect(call).toMatch(/node ".*tdd-feature\.js"/);
     });
   });
