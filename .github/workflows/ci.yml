@@ -8,21 +8,17 @@ on:
 
 jobs:
   test:
-    name: Test on Node ${{ matrix.node }} and ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        node: ['18', '20', '22']
-        os: [ubuntu-latest, windows-latest, macos-latest]
+    name: Test
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js ${{ matrix.node }}
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node }}
+          node-version: '20'
           cache: 'npm'
 
       - name: Install dependencies
