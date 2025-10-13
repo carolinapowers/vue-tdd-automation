@@ -138,6 +138,12 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git checkout -b $BRANCH_NAME
           echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
+
+      - name: Link branch to issue
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh issue develop ${{ steps.parse.outputs.issue_number }} --checkout false --name ${{ env.BRANCH_NAME }}
       
       - name: Generate component scaffold
         run: |

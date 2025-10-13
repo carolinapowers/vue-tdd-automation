@@ -13,7 +13,8 @@
     "declarationMap": true,
     "outDir": "./dist",
     "rootDir": ".",
-    "types": ["node"]
+    "types": ["node"],
+    "incremental": false
   },
   "include": ["bin/**/*", "lib/**/*", "scripts/**/*", "test/**/*"],
   "exclude": ["node_modules", "dist", "templates"]
