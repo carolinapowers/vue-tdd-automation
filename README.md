@@ -47,6 +47,8 @@ npx vue-tdd create MyComponent "Component description"
 
 ## 📖 Usage
 
+> 💡 **For complete CLI documentation, see [CLI.md](./CLI.md)**
+
 ### CLI Commands
 
 #### `vue-tdd init`
@@ -151,6 +153,8 @@ gh pr create
 
 ## 📁 What Gets Installed
 
+### Files & Directories
+
 ```
 your-project/
 ├── .github/
@@ -173,6 +177,33 @@ your-project/
 ├── TDD_WORKFLOW.md
 └── TESTING_COMPARISON.md
 ```
+
+### NPM Scripts
+
+The `init` command automatically adds these scripts to your `package.json`:
+
+```json
+{
+  "scripts": {
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage",
+    "tdd": "vitest --watch --reporter=verbose",
+    "create:component": "node scripts/create-tdd-component.js",
+    "tdd:feature": "node scripts/tdd-feature.js"
+  }
+}
+```
+
+**Usage:**
+- `npm test` - Run all tests once
+- `npm run test:watch` - Run tests in watch mode
+- `npm run test:ui` - Open Vitest UI for interactive testing
+- `npm run test:coverage` - Generate coverage report
+- `npm run tdd` - TDD mode with verbose output (recommended for development)
+- `npm run create:component` - Create a component with tests using CLI
+- `npm run tdd:feature` - Interactive feature creation wizard
 
 ## 🧪 Testing Utilities
 
@@ -247,13 +278,62 @@ Edit `.github/workflows/auto-tdd-setup.yml` to customize:
 - Comment format
 - Trigger conditions
 
-## 📚 Documentation
+## 📚 Documentation & Resources
 
-After initialization, you'll have:
+### Quick Reference
 
-- **TDD_WORKFLOW.md** - Complete TDD workflow guide
-- **TESTING_COMPARISON.md** - Vue Test Utils vs Testing Library
-- **VUE_TESTING_ALIGNMENT.md** - Vue.js testing standards compliance
+- **[CLI.md](./CLI.md)** - Complete CLI command reference
+  - All commands with examples
+  - NPM scripts documentation
+  - Workflows and troubleshooting
+
+### User Guides
+
+- **[TDD_WORKFLOW.md](./templates/docs/TDD_WORKFLOW.md)** - Complete TDD workflow guide
+  - RED → GREEN → REFACTOR process
+  - GitHub Copilot integration
+  - Best practices and examples
+
+- **[TESTING_COMPARISON.md](./templates/docs/TESTING_COMPARISON.md)** - Vue Test Utils vs Testing Library
+  - When to use each approach
+  - Code examples
+  - Migration guide
+
+- **[VUE_TESTING_ALIGNMENT.md](./templates/docs/VUE_TESTING_ALIGNMENT.md)** - Vue.js testing standards compliance
+  - Official Vue.js testing recommendations
+  - Framework alignment details
+
+### Developer Resources
+
+- **[ARCHITECTURE.md](./ARCHITECTURE.md)** - Architecture documentation
+  - TypeScript → JavaScript build process
+  - Directory structure explained
+  - How scripts are compiled and distributed
+  - Mermaid flow diagrams
+  - Adding new scripts guide
+
+- **[TESTING_QUICK_START.md](./TESTING_QUICK_START.md)** - Quick testing reference
+  - Running tests
+  - Local package testing
+  - Common commands
+
+- **[TEST_SETUP.md](./TEST_SETUP.md)** - Comprehensive testing guide
+  - Detailed setup instructions
+  - Testing strategies
+  - Advanced configurations
+
+- **[CONTRIBUTING.md](./CONTRIBUTING.md)** - Contribution guide
+  - Development workflow
+  - Code standards
+  - Pull request process
+
+### Installation Guides
+
+After running `vue-tdd init`, your project will include:
+
+- **TDD_WORKFLOW.md** - TDD workflow guide (copied to your project)
+- **TESTING_COMPARISON.md** - Testing approaches (copied to your project)
+- **VUE_TESTING_ALIGNMENT.md** - Vue standards (copied to your project)
 
 ## 🧪 Testing & Development
 

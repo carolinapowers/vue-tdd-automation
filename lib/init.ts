@@ -34,8 +34,8 @@ export function initTDD(options: InitOptions = {}): void {
   } = options;
 
   const cwd = process.cwd();
-  // Templates are in the package root, up 2 levels from dist/lib
-  const templatesDir = path.join(__dirname, '../../templates');
+  // Templates are in dist/templates, up 1 level from dist/lib
+  const templatesDir = path.join(__dirname, '../templates');
 
   // Verify templates directory exists
   if (!fs.existsSync(templatesDir)) {
