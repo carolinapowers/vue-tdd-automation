@@ -143,182 +143,33 @@ jobs:
         run: |
           node scripts/create-tdd-component.js ${{ steps.parse.outputs.component_name }} "Issue #${{ steps.parse.outputs.issue_number }}: ${{ github.event.issue.title }}"
       
-      - name: Generate tests using AI
+      - name: Generate tests from issue requirements
         id: generate_tests
-        uses: actions/github-script@v6
-        env:
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        with:
-          script: |
-            const fs = require('fs');
-            const path = require('path');
-            
-            const componentName = '${{ steps.parse.outputs.component_name }}';
-            const requirements = JSON.parse('${{ steps.parse.outputs.parsed_requirements }}');
-            
-            // Path to test file
-            const testFile = path.join('src', 'components', `${componentName}.test.ts`);
-            
-            // Read the scaffold test file
-            let testContent = fs.readFileSync(testFile, 'utf8');
-            
-            // Generate test cases based on requirements
-            const testCases = [];
-            
-            // Generate tests for acceptance criteria
-            requirements.acceptanceCriteria.forEach((criteria, index) => {
-              testCases.push({
-                description: criteria,
-                type: 'acceptance'
-              });
-            });
-            
-            // Generate tests for test scenarios
-            requirements.testScenarios.forEach(scenarioGroup => {
-              scenarioGroup.scenarios.forEach(scenario => {
-                testCases.push({
-                  description: scenario,
-                  type: scenarioGroup.type
-                });
-              });
-            });
-            
-            // Generate the test code
-            const generatedTests = testCases.map(testCase => {
-              const testName = testCase.description.toLowerCase()
-                .replace(/[^a-z0-9\s]/g, '')
-                .replace(/\s+/g, ' ')
-                .trim();
-              
-              return `
-              it('should ${testName}', async () => {
-                // ${testCase.type === 'happy' ? 'Happy Path' : testCase.type === 'edge' ? 'Edge Case' : testCase.type === 'error' ? 'Error Case' : 'Acceptance Criteria'}: ${testCase.description}
-                
-                // Arrange
-                const { user } = render(${componentName}, {
-                  props: {
-                    // TODO: Add required props based on: ${requirements.componentDetails.props || 'No props specified'}
-                  }
-                });
-                
-                // Act
-                // TODO: Implement user interactions based on requirement
-                
-                // Assert
-                // TODO: Add assertions to verify: ${testCase.description}
-                expect(true).toBe(false); // This should fail (TDD - Red phase)
-              });`;
-            }).join('\n');
-            
-            // Create the complete test file content
-            const fullTestContent = `/**
-             * GitHub Issue #${{ steps.parse.outputs.issue_number }}: ${{ github.event.issue.title }}
-             * 
-             * User Story: ${requirements.userStory}
-             * 
-             * This test file was auto-generated from the GitHub issue requirements
-             * Following TDD approach - all tests should fail initially (Red phase)
-             */
-            
-            import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
-            import { render, screen, waitFor } from '@/test/helpers/testing-library'
-            import { mount } from '@vue/test-utils'
-            import ${componentName} from './${componentName}.vue'
-            
-            describe('${componentName} Component', () => {
-              beforeEach(() => {
-                vi.clearAllMocks();
-              });
-              
-              afterEach(() => {
-                vi.restoreAllMocks();
-              });
-              
-              describe('Acceptance Criteria', () => {
-                ${testCases.filter(t => t.type === 'acceptance').map(testCase => `
-                it('should ${testCase.description.toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, ' ').trim()}', async () => {
-                  // Acceptance Criteria: ${testCase.description}
-                  
-                  // Using Testing Library for user-centric testing
-                  const { user } = render(${componentName}, {
-                    props: {
-                      // TODO: Add required props
-                    }
-                  });
-                  
-                  // TODO: Implement test based on: ${testCase.description}
-                  
-                  expect(true).toBe(false); // This should fail (TDD - Red phase)
-                });`).join('\n')}
-              });
-              
-              describe('Happy Path', () => {
-                ${testCases.filter(t => t.type === 'happy').map(testCase => `
-                it('should ${testCase.description.toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, ' ').trim()}', async () => {
-                  // Happy Path: ${testCase.description}
-                  
-                  const { user } = render(${componentName});
-                  
-                  // TODO: Implement test
-                  
-                  expect(true).toBe(false); // This should fail (TDD - Red phase)
-                });`).join('\n')}
-              });
-              
-              describe('Edge Cases', () => {
-                ${testCases.filter(t => t.type === 'edge').map(testCase => `
-                it('should handle ${testCase.description.toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, ' ').trim()}', async () => {
-                  // Edge Case: ${testCase.description}
-                  
-                  const { user } = render(${componentName});
-                  
-                  // TODO: Implement edge case test
-                  
-                  expect(true).toBe(false); // This should fail (TDD - Red phase)
-                });`).join('\n')}
-              });
-              
-              describe('Error Handling', () => {
-                ${testCases.filter(t => t.type === 'error').map(testCase => `
-                it('should handle ${testCase.description.toLowerCase().replace(/[^a-z0-9\s]/g, '').replace(/\s+/g, ' ').trim()}', async () => {
-                  // Error Case: ${testCase.description}
-                  
-                  const { user } = render(${componentName});
-                  
-                  // TODO: Implement error handling test
-                  
-                  expect(true).toBe(false); // This should fail (TDD - Red phase)
-                });`).join('\n')}
-              });
-              
-              describe('Accessibility', () => {
-                it('should be accessible to screen readers', () => {
-                  render(${componentName});
-                  
-                  // TODO: Add accessibility checks based on component type
-                  // - Check for proper ARIA labels
-                  // - Verify keyboard navigation
-                  // - Ensure proper heading hierarchy
-                  
-                  expect(true).toBe(false); // This should fail (TDD - Red phase)
-                });
-                
-                it('should be keyboard navigable', async () => {
-                  const { user } = render(${componentName});
-                  
-                  // TODO: Test keyboard navigation
-                  // await user.tab();
-                  // expect(element).toHaveFocus();
-                  
-                  expect(true).toBe(false); // This should fail (TDD - Red phase)
-                });
-              });
-            });`;
-            
-            // Write the generated test file
-            fs.writeFileSync(testFile, fullTestContent);
-            
-            return { success: true, testFile, testCount: testCases.length };
+        run: |
+          # Parse requirements and generate tests using shared library
+          REQUIREMENTS='${{ steps.parse.outputs.parsed_requirements }}'
+          COMPONENT_NAME='${{ steps.parse.outputs.component_name }}'
+          ISSUE_NUMBER='${{ steps.parse.outputs.issue_number }}'
+          ISSUE_TITLE='${{ github.event.issue.title }}'
+
+          # Generate test content using our shared library
+          node templates/scripts/generate-tests-from-issue.js \
+            "$COMPONENT_NAME" \
+            "$REQUIREMENTS" \
+            "$ISSUE_NUMBER" \
+            "$ISSUE_TITLE" > test_output.log 2>&1
+
+          # Extract test content
+          TEST_CONTENT=$(sed -n '/TEST_CONTENT_START/,/TEST_CONTENT_END/p' test_output.log | sed '1d;$d')
+
+          # Write to test file
+          TEST_FILE="src/components/${COMPONENT_NAME}.test.ts"
+          echo "$TEST_CONTENT" > "$TEST_FILE"
+
+          # Show generation summary
+          cat test_output.log | grep -E "^(✅|⚠️|❌)"
+
+          echo "test_file=$TEST_FILE" >> $GITHUB_OUTPUT
       
       - name: Commit changes
         run: |

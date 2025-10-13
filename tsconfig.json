@@ -15,6 +15,6 @@
     "rootDir": ".",
     "types": ["node"]
   },
-  "include": ["bin/**/*", "lib/**/*", "test/**/*"],
+  "include": ["bin/**/*", "lib/**/*", "scripts/**/*", "test/**/*"],
   "exclude": ["node_modules", "dist", "templates"]
 }
