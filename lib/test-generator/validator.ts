@@ -83,7 +83,8 @@ export function validateTestContent(
   }
 
   // Check 11: Component name matches filename pattern
-  const importPattern = new RegExp(`import ${componentName} from '\\.\\/${componentName}\\.vue'`);
+  const escapedComponentName = componentName.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const importPattern = new RegExp(`import ${escapedComponentName} from '\\.\\/${escapedComponentName}\\.vue'`);
   if (!importPattern.test(testContent)) {
     errors.push(`Component import path doesn't match expected pattern: ./${componentName}.vue`);
   }
