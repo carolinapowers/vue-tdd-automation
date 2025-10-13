@@ -79,7 +79,8 @@ export function initTDD(options: InitOptions = {}): void {
   if (scripts) {
     filesToCopy.push(
       { src: 'scripts/tdd-feature.js', dest: 'scripts/tdd-feature.js' },
-      { src: 'scripts/create-tdd-component.js', dest: 'scripts/create-tdd-component.js' }
+      { src: 'scripts/create-tdd-component.js', dest: 'scripts/create-tdd-component.js' },
+      { src: 'scripts/generate-tests-from-issue.js', dest: 'scripts/generate-tests-from-issue.js' }
     );
   }
 
