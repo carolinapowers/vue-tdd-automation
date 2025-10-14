@@ -16,6 +16,7 @@ export interface InitOptions {
   workflows?: boolean;
   docs?: boolean;
   scripts?: boolean;
+  copilot?: boolean;
   force?: boolean;
 }
 
@@ -30,6 +31,7 @@ export function initTDD(options: InitOptions = {}): void {
     workflows = true,
     docs = true,
     scripts = true,
+    copilot = false,
     force = false
   } = options;
 
@@ -90,6 +92,13 @@ export function initTDD(options: InitOptions = {}): void {
       { src: 'github/workflows/auto-tdd-setup.yml', dest: '.github/workflows/auto-tdd-setup.yml' },
       { src: 'github/workflows/tdd.yml', dest: '.github/workflows/tdd.yml' },
       { src: 'github/ISSUE_TEMPLATE/feature_request.md', dest: '.github/ISSUE_TEMPLATE/feature_request.md' }
+    );
+  }
+
+  // Optional Copilot instructions
+  if (copilot) {
+    filesToCopy.push(
+      { src: 'github/copilot-instructions.md', dest: '.github/copilot-instructions.md' }
     );
   }
 
