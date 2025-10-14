@@ -6,8 +6,9 @@
   "type": "module",
   "exports": {
     ".": "./dist/lib/init.js",
-    "./test-generator": "./dist/lib/test-generator/index.js",
-    "./test-generator/types": "./dist/lib/test-generator/types.js"
+    "./test-generator/index.js": "./dist/lib/test-generator/index.js",
+    "./test-generator/validator.js": "./dist/lib/test-generator/validator.js",
+    "./test-generator/types.js": "./dist/lib/test-generator/types.js"
   },
   "bin": {
     "vue-tdd": "./dist/bin/cli.js"
