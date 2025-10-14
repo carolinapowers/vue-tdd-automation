@@ -12,6 +12,7 @@ Automate your Vue.js TDD workflow with GitHub issue-driven development, automati
 - ♿ **Accessibility First** - Built-in a11y testing utilities
 - 📊 **Coverage Enforcement** - Automatic 80% coverage thresholds
 - 🔄 **GitHub Actions** - Automated TDD setup workflow
+- 🤖 **GitHub Copilot Support** - Pre-configured instructions for AI-assisted test writing
 - 📚 **Comprehensive Docs** - TDD guides and best practices included
 
 ## 🚀 Quick Start
@@ -34,6 +35,8 @@ This will:
 - Install GitHub Actions workflow
 - Add issue templates
 - Create comprehensive documentation
+
+**Tip:** Add `--copilot` flag to include GitHub Copilot instructions for AI-assisted test writing
 
 ### Create Your First Component (TDD Style)
 
@@ -62,12 +65,16 @@ Options:
 - `--no-workflows` - Skip GitHub Actions workflows
 - `--no-docs` - Skip documentation files
 - `--no-scripts` - Skip component creation scripts
+- `--copilot` - Add GitHub Copilot instructions file
 - `--force` - Overwrite existing files
 
 Examples:
 ```bash
 # Full installation (default)
 npx vue-tdd init
+
+# With GitHub Copilot support
+npx vue-tdd init --copilot
 
 # Minimal (core test files only)
 npx vue-tdd init --no-workflows --no-docs --no-scripts
@@ -158,6 +165,7 @@ gh pr create
 ```
 your-project/
 ├── .github/
+│   ├── copilot-instructions.md  ← Guides GitHub Copilot
 │   ├── workflows/
 │   │   └── auto-tdd-setup.yml
 │   └── ISSUE_TEMPLATE/
@@ -248,6 +256,51 @@ import { a11y } from '@/test/helpers/testing-library'
 expect(a11y.isAccessible(element)).toBe(true)
 expect(a11y.getAccessibleName(element)).toBe('Submit Form')
 ```
+
+## 🤖 GitHub Copilot Integration
+
+This package includes pre-configured GitHub Copilot instructions to help you write better tests faster.
+
+### What's Included
+
+When you run `vue-tdd init --copilot`, a `.github/copilot-instructions.md` file is installed with:
+
+- ✅ Vue + Vitest testing best practices
+- ✅ Testing Library query preferences (accessibility-first)
+- ✅ TDD workflow guidelines (Red → Green → Refactor)
+- ✅ Accessibility testing patterns
+- ✅ Common test patterns and examples
+- ✅ What to test (and what NOT to test)
+
+### How It Works
+
+Once installed, GitHub Copilot automatically uses these instructions when you:
+- Write new test files
+- Add test cases
+- Update existing tests
+
+**Example:** When you type `it('should`, Copilot will suggest tests that follow Testing Library best practices, use accessible queries, and include proper async handling.
+
+### Benefits
+
+- **Faster Development** - Get intelligent test suggestions based on your requirements
+- **Better Quality** - Tests follow best practices automatically
+- **Consistency** - All tests follow the same patterns across your team
+- **Learning Tool** - Great for teams learning TDD or Testing Library
+
+### Requirements
+
+- GitHub Copilot subscription (individual or business)
+- VS Code with GitHub Copilot extension (or other Copilot-enabled IDE)
+
+### Customization
+
+Edit `.github/copilot-instructions.md` in your project to:
+- Add project-specific testing patterns
+- Include custom component examples
+- Adjust guidelines for your team's needs
+
+**Note:** Changes only affect your project, not the package defaults.
 
 ## 🎨 Customization
 

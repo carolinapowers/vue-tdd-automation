@@ -28,6 +28,7 @@ interface InitOptions {
   workflows: boolean;
   docs: boolean;
   scripts: boolean;
+  copilot: boolean;
   force: boolean;
 }
 
@@ -47,6 +48,7 @@ program
   .option('--no-workflows', 'Skip GitHub Actions workflows')
   .option('--no-docs', 'Skip documentation files')
   .option('--no-scripts', 'Skip component creation scripts')
+  .option('--copilot', 'Add GitHub Copilot instructions for AI-assisted test writing')
   .option('--force', 'Overwrite existing files')
   .action((options: InitOptions) => {
     console.log(chalk.cyan.bold('\n🤖 Initializing Vue TDD Workflow...\n'));
