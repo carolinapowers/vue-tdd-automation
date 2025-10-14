@@ -1,6 +1,6 @@
 {
   "name": "@carolinappowers/vue-tdd-automation",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Automated TDD workflow for Vue.js applications with Vitest and Testing Library",
   "main": "dist/lib/init.js",
   "type": "module",
