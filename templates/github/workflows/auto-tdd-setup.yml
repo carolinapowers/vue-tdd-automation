@@ -139,16 +139,10 @@ jobs:
           git checkout -b $BRANCH_NAME
           echo "BRANCH_NAME=$BRANCH_NAME" >> $GITHUB_ENV
 
-      - name: Link branch to issue
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          gh issue develop ${{ steps.parse.outputs.issue_number }} --checkout false --name ${{ env.BRANCH_NAME }}
-      
       - name: Generate component scaffold
         run: |
           node scripts/create-tdd-component.js ${{ steps.parse.outputs.component_name }} "Issue #${{ steps.parse.outputs.issue_number }}: ${{ github.event.issue.title }}"
-      
+
       - name: Generate tests from issue requirements
         id: generate_tests
         run: |
@@ -159,7 +153,7 @@ jobs:
           ISSUE_TITLE='${{ github.event.issue.title }}'
 
           # Generate test content using our shared library
-          node templates/scripts/generate-tests-from-issue.js \
+          node scripts/generate-tests-from-issue.js \
             "$COMPONENT_NAME" \
             "$REQUIREMENTS" \
             "$ISSUE_NUMBER" \

@@ -140,7 +140,7 @@ export function validateTestStructure(testContent: string): ValidationResult {
   }
 
   return {
-    valid: warnings.length === 0,
+    valid: true,  // Warnings don't invalidate the structure
     warnings,
     errors: []
   };

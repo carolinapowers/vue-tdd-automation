@@ -54,15 +54,19 @@ try {
       content = '#!/usr/bin/env node\n' + content;
     }
 
-    // For tdd-feature.js, replace relative imports with package imports
-    if (file === 'tdd-feature.js') {
+    // For scripts that use test-generator, replace relative imports with package imports
+    if (file === 'tdd-feature.js' || file === 'generate-tests-from-issue.js') {
       content = content.replace(
         /from ['"]\.\.\/test-generator\/index\.js['"]/g,
-        "from '@vue-tdd/automation/test-generator'"
+        "from '@carolinappowers/vue-tdd-automation/test-generator/index.js'"
+      );
+      content = content.replace(
+        /from ['"]\.\.\/test-generator\/validator\.js['"]/g,
+        "from '@carolinappowers/vue-tdd-automation/test-generator/validator.js'"
       );
       content = content.replace(
         /from ['"]\.\.\/test-generator\/types\.js['"]/g,
-        "from '@vue-tdd/automation/test-generator/types'"
+        "from '@carolinappowers/vue-tdd-automation/test-generator/types.js'"
       );
     }
 
