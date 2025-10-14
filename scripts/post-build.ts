@@ -58,15 +58,15 @@ try {
     if (file === 'tdd-feature.js' || file === 'generate-tests-from-issue.js') {
       content = content.replace(
         /from ['"]\.\.\/test-generator\/index\.js['"]/g,
-        "from '@vue-tdd/automation/test-generator/index.js'"
+        "from '@carolinappowers/vue-tdd-automation/test-generator/index.js'"
       );
       content = content.replace(
         /from ['"]\.\.\/test-generator\/validator\.js['"]/g,
-        "from '@vue-tdd/automation/test-generator/validator.js'"
+        "from '@carolinappowers/vue-tdd-automation/test-generator/validator.js'"
       );
       content = content.replace(
         /from ['"]\.\.\/test-generator\/types\.js['"]/g,
-        "from '@vue-tdd/automation/test-generator/types.js'"
+        "from '@carolinappowers/vue-tdd-automation/test-generator/types.js'"
       );
     }
 
