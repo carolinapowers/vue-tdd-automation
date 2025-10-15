@@ -13,6 +13,7 @@ import type {
 } from './types.js';
 import { generateTestWithAI, validateAIConfig } from './ai-generator.js';
 import { generateEnhancedScaffold, type EnhancedScaffoldContext } from './enhanced-scaffold.js';
+import { generateCopilotScaffold, type CopilotScaffoldContext } from './copilot-scaffold.js';
 
 /**
  * Generates a complete test file content based on requirements
@@ -32,9 +33,9 @@ export async function generateTestContent(
     events = ''
   } = requirements;
 
-  const { issueNumber, issueTitle, aiGenerate = false } = options;
+  const { issueNumber, issueTitle, aiGenerate = false, copilotReady = false } = options;
 
-  // Log AI generation status
+  // Log generation mode
   if (aiGenerate) {
     const config = validateAIConfig();
     if (config.valid) {
@@ -43,6 +44,9 @@ export async function generateTestContent(
       console.log(`⚠️  AI generation requested but ${config.message}`);
       console.log('📝 Falling back to enhanced scaffolds');
     }
+  } else if (copilotReady) {
+    console.log('🤖 Copilot-optimized scaffolds enabled');
+    console.log('💡 These tests are designed for easy completion with GitHub Copilot');
   }
 
   // Build header comment
@@ -75,7 +79,8 @@ import ${componentName} from './${componentName}.vue'
     events,
     userStory,
     acceptanceCriteria,
-    aiGenerate
+    aiGenerate,
+    copilotReady
   };
 
   // Acceptance Criteria section
@@ -204,6 +209,22 @@ ${aiResult.split('\n').map(line => `      ${line}`).join('\n')}
     }
   }
 
+  // Use Copilot-optimized scaffold if enabled
+  if (context.copilotReady) {
+    const copilotContext: CopilotScaffoldContext = {
+      componentName,
+      scenario,
+      type: type as 'acceptance' | 'happy' | 'edge' | 'error' | 'accessibility',
+      description,
+      props: context.props,
+      events: context.events,
+      userStory: context.userStory,
+      acceptanceCriteria: context.acceptanceCriteria
+    };
+
+    return generateCopilotScaffold(copilotContext);
+  }
+
   // Fallback to enhanced scaffold
   const scaffoldContext: EnhancedScaffoldContext = {
     componentName,
@@ -248,6 +269,22 @@ async function generateAccessibilitySection(
 ${aiResult.split('\n').map(line => `      ${line}`).join('\n')}
     });`;
         }
+      }
+
+      // Use Copilot-optimized scaffold if enabled
+      if (context.copilotReady) {
+        const copilotContext: CopilotScaffoldContext = {
+          componentName,
+          scenario,
+          type: 'accessibility',
+          description,
+          props: context.props,
+          events: context.events,
+          userStory: context.userStory,
+          acceptanceCriteria: context.acceptanceCriteria
+        };
+
+        return generateCopilotScaffold(copilotContext);
       }
 
       // Fallback to enhanced scaffold

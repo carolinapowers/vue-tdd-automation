@@ -40,6 +40,9 @@ export interface TestGenerationOptions {
 
   /** Enable AI-powered test generation (requires API key) */
   aiGenerate?: boolean;
+
+  /** Generate Copilot-optimized scaffolds with rich context (helps Copilot suggest better completions) */
+  copilotReady?: boolean;
 }
 
 /**
@@ -107,6 +110,9 @@ export interface TestSectionContext {
 
   /** Enable AI generation */
   aiGenerate?: boolean;
+
+  /** Enable Copilot-optimized scaffolds */
+  copilotReady?: boolean;
 }
 
 /**

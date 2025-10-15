@@ -14,12 +14,13 @@ import type { TestRequirements } from '../test-generator/types.js';
 const [,, componentName, requirementsJson, issueNumber, issueTitle, ...flags] = process.argv;
 
 if (!componentName || !requirementsJson) {
-  console.error('Usage: node generate-tests-from-issue.js <componentName> <requirementsJson> [issueNumber] [issueTitle] [--ai-generate]');
+  console.error('Usage: node generate-tests-from-issue.js <componentName> <requirementsJson> [issueNumber] [issueTitle] [--ai-generate] [--copilot-ready]');
   process.exit(1);
 }
 
-// Check for AI generation flag
+// Check for generation flags
 const aiGenerate = flags.includes('--ai-generate') || process.env.AI_GENERATE === 'true';
+const copilotReady = flags.includes('--copilot-ready') || process.env.COPILOT_READY === 'true';
 
 async function main() {
   try {
@@ -41,7 +42,8 @@ async function main() {
       {
         issueNumber,
         issueTitle,
-        aiGenerate
+        aiGenerate,
+        copilotReady
       }
     );
 

@@ -7,6 +7,7 @@ import path from 'path';
 
 export interface CreateComponentOptions {
   aiGenerate?: boolean;
+  copilotReady?: boolean;
 }
 
 export function createComponent(
@@ -22,7 +23,9 @@ export function createComponent(
   try {
     const desc = description || `Component: ${name}`;
     const aiFlag = options.aiGenerate ? '--ai-generate' : '';
-    execSync(`node "${scriptPath}" "${name}" "${desc}" ${aiFlag}`, {
+    const copilotFlag = options.copilotReady ? '--copilot-ready' : '';
+    const flags = [aiFlag, copilotFlag].filter(Boolean).join(' ');
+    execSync(`node "${scriptPath}" "${name}" "${desc}" ${flags}`, {
       cwd,
       stdio: 'inherit'
     });

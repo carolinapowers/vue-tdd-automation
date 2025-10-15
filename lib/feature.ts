@@ -8,6 +8,7 @@ import path from 'path';
 export interface FeatureOptions {
   issue?: boolean;
   aiGenerate?: boolean;
+  copilotReady?: boolean;
 }
 
 export function createFeature(options: FeatureOptions = {}): void {
@@ -18,12 +19,15 @@ export function createFeature(options: FeatureOptions = {}): void {
 
   try {
     const aiFlag = options.aiGenerate ? '--ai-generate' : '';
-    execSync(`node "${scriptPath}" ${aiFlag}`, {
+    const copilotFlag = options.copilotReady ? '--copilot-ready' : '';
+    const flags = [aiFlag, copilotFlag].filter(Boolean).join(' ');
+    execSync(`node "${scriptPath}" ${flags}`, {
       cwd,
       stdio: 'inherit',
       env: {
         ...process.env,
-        FEATURE_AI_GENERATE: options.aiGenerate ? 'true' : 'false'
+        FEATURE_AI_GENERATE: options.aiGenerate ? 'true' : 'false',
+        FEATURE_COPILOT_READY: options.copilotReady ? 'true' : 'false'
       }
     });
   } catch (error) {

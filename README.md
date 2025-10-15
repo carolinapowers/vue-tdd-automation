@@ -13,7 +13,8 @@ Automate your Vue.js TDD workflow with GitHub issue-driven development, automati
 - 📊 **Coverage Enforcement** - Automatic 80% coverage thresholds
 - 🔄 **GitHub Actions** - Automated TDD setup workflow
 - 🧠 **AI-Powered Test Generation** - Generate actual test implementations with OpenAI or GitHub Models (optional)
-- 🤖 **GitHub Copilot Support** - Pre-configured instructions for AI-assisted test writing
+- 🤖 **Copilot-Optimized Scaffolds** - Rich context scaffolds designed for GitHub Copilot completion (no API keys needed!)
+- 💡 **GitHub Copilot Instructions** - Pre-configured instructions for AI-assisted test writing
 - 📚 **Comprehensive Docs** - TDD guides and best practices included
 
 ## 🚀 Quick Start
@@ -440,6 +441,115 @@ AI_GENERATE=true npm run tdd:feature
 - **GitHub Models**: Free tier available for all GitHub users
 - **OpenAI**: ~$0.15 per 1M tokens (GPT-4o-mini), approximately $0.001-0.005 per test
 - **Caching**: No caching between runs, each test generated fresh
+
+## 🤖 Copilot-Optimized Scaffolds
+
+Perfect for teams with existing GitHub Copilot subscriptions! Generate test scaffolds specifically designed to maximize Copilot's ability to suggest accurate test implementations.
+
+### Overview
+
+If your company provides GitHub Copilot, you don't need separate AI API keys. The `--copilot-ready` flag generates scaffolds with rich contextual comments that help Copilot suggest better completions.
+
+### Quick Start
+
+```bash
+# Generate Copilot-optimized test scaffolds
+npx vue-tdd create MyButton "A button component" --copilot-ready
+npx vue-tdd feature --copilot-ready
+```
+
+### How It Works
+
+Copilot-optimized scaffolds include:
+- **Rich Context** - User story, acceptance criteria, and component details in comments
+- **Step-by-Step Guidance** - Detailed COPILOT INSTRUCTIONS for what to implement
+- **Example Patterns** - Common testing patterns and best practices inline
+- **Type Hints** - Component props and events clearly documented
+- **Documentation Links** - References to Testing Library docs and WCAG standards
+
+### Example Output
+
+```typescript
+it('should display user name', async () => {
+  // Acceptance Criteria: Card displays user name
+  // User Story: As a user, I want to see a profile card so that I can view user information
+  // Component props: userName: string, email?: string
+  //
+  // COPILOT INSTRUCTIONS:
+  // 1. Render the ProfileCard component with appropriate props
+  // 2. Simulate user interactions that match the scenario: "Card displays user name"
+  // 3. Assert that the expected outcome is achieved
+  //
+  // Testing Library Best Practices:
+  // - Use getByRole() for semantic queries (preferred)
+  // - Use getByLabelText() for form inputs
+  // - Use getByText() for text content
+  //
+  // TDD Pattern: This test should FAIL initially (Red phase)
+
+  // STEP 1: Arrange - Set up the test environment
+  const { user } = render(ProfileCard, {
+    props: {
+      // TODO: Add props based on: userName: string, email?: string
+      // Example: userName: 'John Doe', email: 'john@example.com'
+    }
+  });
+
+  // STEP 2: Act - Simulate user interactions
+  // Common patterns:
+  //   - Click: await user.click(screen.getByRole('button', { name: /text/i }))
+  //   - Type: await user.type(screen.getByLabelText('Label'), 'value')
+
+  // STEP 3: Assert - Verify the expected outcome
+  // Common assertions:
+  //   - Element visible: expect(screen.getByText('text')).toBeInTheDocument()
+  //   - Element has text: expect(screen.getByRole('heading')).toHaveTextContent('User Name')
+
+  // TDD Red Phase: This should fail until component is implemented
+  expect(true).toBe(false); // Remove this line after implementing the test
+});
+```
+
+### Benefits
+
+- **No API Keys Required** - Use your existing Copilot subscription
+- **Better Completions** - Rich context helps Copilot understand what you need
+- **Learning Tool** - Detailed comments teach Testing Library best practices
+- **Accessibility Focus** - Built-in WCAG guidance and semantic HTML examples
+- **Works in GitHub Actions** - Unlike AI generation, these scaffolds work in CI/CD
+
+### Comparison with Other Modes
+
+| Mode | Best For | Requires |
+|------|----------|----------|
+| **Default** | Strict TDD, full control | Nothing |
+| **`--ai-generate`** | Fast development, ready tests | API key |
+| **`--copilot-ready`** | Teams with Copilot, guided completion | GitHub Copilot |
+
+### Usage in GitHub Actions
+
+Copilot-optimized scaffolds work perfectly in automated workflows:
+
+```yaml
+# In your GitHub Actions workflow
+- name: Generate tests with Copilot scaffolds
+  run: |
+    npx vue-tdd feature --copilot-ready
+```
+
+Team members can then complete the scaffolds using Copilot in their IDE.
+
+### Requirements
+
+- GitHub Copilot subscription (individual, business, or enterprise)
+- VS Code with GitHub Copilot extension (or other Copilot-enabled IDE)
+
+### Tips for Best Results
+
+1. **Keep Context** - Don't delete the comment blocks - they help Copilot
+2. **Tab Through** - Use Tab to accept Copilot suggestions step by step
+3. **Review Generated Code** - Always verify Copilot's suggestions match your requirements
+4. **Combine with `--copilot` Init** - Use both `vue-tdd init --copilot` and `--copilot-ready` for maximum benefit
 
 ## 🎨 Customization
 
