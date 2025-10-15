@@ -34,6 +34,11 @@ interface InitOptions {
 
 interface FeatureOptions {
   issue: boolean;
+  aiGenerate: boolean;
+}
+
+interface CreateOptions {
+  aiGenerate: boolean;
 }
 
 program
@@ -73,10 +78,11 @@ program
   .command('create <name>')
   .description('Create a new component with TDD tests')
   .argument('[description]', 'Component description')
-  .action((name: string, description?: string) => {
+  .option('--ai-generate', 'Use AI to generate test implementations (requires OPENAI_API_KEY or GITHUB_TOKEN)')
+  .action((name: string, description: string | undefined, options: CreateOptions) => {
     console.log(chalk.cyan.bold(`\n🎨 Creating ${name} component...\n`));
     try {
-      createComponent(name, description);
+      createComponent(name, description, options);
       console.log(chalk.green.bold('\n✅ Component created successfully!\n'));
       console.log(chalk.yellow('Next steps:'));
       console.log('  1. Run ' + chalk.cyan('npm run tdd') + ' to start test watch mode');
@@ -95,6 +101,7 @@ program
   .command('feature')
   .description('Interactive feature creation wizard')
   .option('--no-issue', 'Skip GitHub issue creation')
+  .option('--ai-generate', 'Use AI to generate test implementations (requires OPENAI_API_KEY or GITHUB_TOKEN)')
   .action((options: FeatureOptions) => {
     console.log(chalk.cyan.bold('\n🚀 Feature Creation Wizard\n'));
     try {

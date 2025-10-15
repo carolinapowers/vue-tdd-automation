@@ -12,6 +12,7 @@ Automate your Vue.js TDD workflow with GitHub issue-driven development, automati
 - ♿ **Accessibility First** - Built-in a11y testing utilities
 - 📊 **Coverage Enforcement** - Automatic 80% coverage thresholds
 - 🔄 **GitHub Actions** - Automated TDD setup workflow
+- 🧠 **AI-Powered Test Generation** - Generate actual test implementations with OpenAI or GitHub Models (optional)
 - 🤖 **GitHub Copilot Support** - Pre-configured instructions for AI-assisted test writing
 - 📚 **Comprehensive Docs** - TDD guides and best practices included
 
@@ -301,6 +302,144 @@ Edit `.github/copilot-instructions.md` in your project to:
 - Adjust guidelines for your team's needs
 
 **Note:** Changes only affect your project, not the package defaults.
+
+## 🧠 AI-Powered Test Generation
+
+Generate actual test implementations using AI instead of scaffolds with TODOs.
+
+### Overview
+
+By default, `@vue-tdd/automation` generates test scaffolds with Arrange/Act/Assert structure and TODO comments (perfect for TDD). With the `--ai-generate` flag, you can generate actual test implementations using AI.
+
+### Quick Start
+
+```bash
+# Set your API key (choose one)
+export OPENAI_API_KEY="sk-..."  # OpenAI API
+export GITHUB_TOKEN="ghp_..."    # GitHub Models API (free tier available)
+
+# Generate AI-powered tests
+npx vue-tdd create MyButton "A button component" --ai-generate
+npx vue-tdd feature --ai-generate
+```
+
+### How It Works
+
+1. **AI Generation** - Tries to generate actual test code using OpenAI or GitHub Models API
+2. **Enhanced Scaffolds** - Falls back to structured scaffolds with Arrange/Act/Assert if AI fails or no API key
+3. **Hybrid Approach** - Best of both worlds: AI intelligence with reliable fallback
+
+### API Key Setup
+
+#### OpenAI API
+
+```bash
+# Get API key from https://platform.openai.com/api-keys
+export OPENAI_API_KEY="sk-your-key-here"
+
+# Or add to your shell profile (.bashrc, .zshrc, etc.)
+echo 'export OPENAI_API_KEY="sk-your-key-here"' >> ~/.zshrc
+```
+
+#### GitHub Models API (Free Tier)
+
+```bash
+# Use your GitHub personal access token
+export GITHUB_TOKEN="ghp_your-token-here"
+
+# Or use existing token if you have one
+# GitHub CLI users already have this set!
+```
+
+### Features
+
+- ✅ **Actual Test Implementations** - No more TODOs, get working test code
+- ✅ **Intelligent** - Understands user stories, acceptance criteria, and component context
+- ✅ **Testing Library First** - Generates accessible, user-centric tests
+- ✅ **Arrange/Act/Assert** - Follows best practices with clear structure
+- ✅ **Automatic Fallback** - Enhanced scaffolds if AI unavailable
+- ✅ **No Lock-in** - Works with or without AI, your choice
+
+### Examples
+
+#### Without AI (Default)
+```typescript
+it('should display welcome message', async () => {
+  // Happy Path: User sees welcome message on load
+
+  // Arrange
+  const { user } = render(WelcomeCard);
+
+  // Act
+  // TODO: Implement user interactions based on scenario
+
+  // Assert
+  // TODO: Add assertions to verify: User sees welcome message on load
+
+  expect(true).toBe(false); // This should fail (TDD - Red phase)
+});
+```
+
+#### With AI (`--ai-generate`)
+```typescript
+it('should display welcome message', async () => {
+  // Happy Path: User sees welcome message on load
+
+  // Arrange
+  const { user } = render(WelcomeCard, {
+    props: {
+      userName: 'John'
+    }
+  });
+
+  // Act
+  // Component renders immediately with welcome message
+
+  // Assert
+  expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent('Welcome, John!');
+  expect(screen.getByText(/we're glad you're here/i)).toBeInTheDocument();
+});
+```
+
+### Configuration
+
+AI generation is **opt-in** via the `--ai-generate` flag:
+
+```bash
+# Interactive wizard with AI
+npx vue-tdd feature --ai-generate
+
+# Create component with AI
+npx vue-tdd create MyComponent "Description" --ai-generate
+
+# Use environment variable for scripts
+AI_GENERATE=true npm run tdd:feature
+```
+
+### Supported AI Providers
+
+- **OpenAI** (gpt-4o-mini, gpt-4o, gpt-3.5-turbo)
+- **GitHub Models** (free tier available for GitHub users)
+
+### When to Use AI Generation
+
+**Use AI generation when:**
+- You want to move faster with ready-to-refine tests
+- You're learning Testing Library patterns
+- You have clear, well-defined requirements
+- You want to reduce repetitive test writing
+
+**Use scaffolds when:**
+- You're doing strict TDD (Red → Green → Refactor)
+- You want full control over test implementation
+- You're learning testing concepts
+- No API key available
+
+### Cost & Rate Limits
+
+- **GitHub Models**: Free tier available for all GitHub users
+- **OpenAI**: ~$0.15 per 1M tokens (GPT-4o-mini), approximately $0.001-0.005 per test
+- **Caching**: No caching between runs, each test generated fresh
 
 ## 🎨 Customization
 

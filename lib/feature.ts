@@ -7,18 +7,24 @@ import path from 'path';
 
 export interface FeatureOptions {
   issue?: boolean;
+  aiGenerate?: boolean;
 }
 
-export function createFeature(_options: FeatureOptions = {}): void {
+export function createFeature(options: FeatureOptions = {}): void {
   const cwd = process.cwd();
 
   // Check if scripts exist
   const scriptPath = path.join(cwd, 'scripts', 'tdd-feature.js');
 
   try {
-    execSync(`node "${scriptPath}"`, {
+    const aiFlag = options.aiGenerate ? '--ai-generate' : '';
+    execSync(`node "${scriptPath}" ${aiFlag}`, {
       cwd,
-      stdio: 'inherit'
+      stdio: 'inherit',
+      env: {
+        ...process.env,
+        FEATURE_AI_GENERATE: options.aiGenerate ? 'true' : 'false'
+      }
     });
   } catch (error) {
     if (error instanceof Error) {

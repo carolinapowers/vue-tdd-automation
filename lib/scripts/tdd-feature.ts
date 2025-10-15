@@ -212,7 +212,10 @@ ${issueBody}`);
       events
     };
 
-    const testContent = generateTestContent(componentName, requirements);
+    // Check for AI generation flag
+    const aiGenerate = process.env.FEATURE_AI_GENERATE === 'true';
+
+    const testContent = await generateTestContent(componentName, requirements, { aiGenerate });
 
     fs.writeFileSync(testFile, testContent);
 
