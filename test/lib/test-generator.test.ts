@@ -7,8 +7,8 @@ import {
   generateTestContent,
   isValidComponentName,
   validateRequirements
-} from '../../lib/test-generator/index.js';
-import type { TestRequirements } from '../../lib/test-generator/types.js';
+} from '../../lib/shared/test-generator/index.js';
+import type { TestRequirements } from '../../lib/shared/test-generator/types.js';
 
 describe('Test Generator', () => {
   describe('isValidComponentName', () => {

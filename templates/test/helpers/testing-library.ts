@@ -4,8 +4,9 @@
  * For better accessibility and user interaction testing
  */
 
-import { render as tlRender, RenderOptions, RenderResult } from '@testing-library/vue'
-import { Component } from 'vue'
+import { render as tlRender } from '@testing-library/vue'
+import type { RenderOptions, RenderResult } from '@testing-library/vue'
+import type { Component } from 'vue'
 import userEvent from '@testing-library/user-event'
 
 /**

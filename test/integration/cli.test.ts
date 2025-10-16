@@ -1,15 +1,15 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
 // Mock dependencies
-vi.mock('../../lib/init', () => ({
+vi.mock('../../lib/cli/init', () => ({
   initTDD: vi.fn().mockResolvedValue(undefined)
 }));
 
-vi.mock('../../lib/create', () => ({
+vi.mock('../../lib/cli/create', () => ({
   createComponent: vi.fn().mockResolvedValue(undefined)
 }));
 
-vi.mock('../../lib/feature', () => ({
+vi.mock('../../lib/cli/feature', () => ({
   createFeature: vi.fn().mockResolvedValue(undefined)
 }));
 
@@ -47,20 +47,20 @@ describe('CLI Integration', () => {
     it('should export main entry point', async () => {
       const { default: packageJson } = await import('../../package.json');
 
-      expect(packageJson.main).toBe('dist/lib/init.js');
+      expect(packageJson.main).toBe('dist/lib/cli/init.js');
     });
   });
 
   describe('init command', () => {
     it('should import initTDD function', async () => {
-      const { initTDD } = await import('../../lib/init');
+      const { initTDD } = await import('../../lib/cli/init');
 
       expect(initTDD).toBeDefined();
       expect(typeof initTDD).toBe('function');
     });
 
     it('should call initTDD with correct options', async () => {
-      const { initTDD } = await import('../../lib/init');
+      const { initTDD } = await import('../../lib/cli/init');
 
       initTDD({ workflows: true, docs: true, force: false });
 
@@ -72,7 +72,7 @@ describe('CLI Integration', () => {
     });
 
     it('should support --no-workflows flag', async () => {
-      const { initTDD } = await import('../../lib/init');
+      const { initTDD } = await import('../../lib/cli/init');
 
       initTDD({ workflows: false, docs: true, force: false });
 
@@ -82,7 +82,7 @@ describe('CLI Integration', () => {
     });
 
     it('should support --no-docs flag', async () => {
-      const { initTDD } = await import('../../lib/init');
+      const { initTDD } = await import('../../lib/cli/init');
 
       initTDD({ workflows: true, docs: false, force: false });
 
@@ -92,7 +92,7 @@ describe('CLI Integration', () => {
     });
 
     it('should support --force flag', async () => {
-      const { initTDD } = await import('../../lib/init');
+      const { initTDD } = await import('../../lib/cli/init');
 
       initTDD({ workflows: true, docs: true, force: true });
 
@@ -104,14 +104,14 @@ describe('CLI Integration', () => {
 
   describe('create command', () => {
     it('should import createComponent function', async () => {
-      const { createComponent } = await import('../../lib/create');
+      const { createComponent } = await import('../../lib/cli/create');
 
       expect(createComponent).toBeDefined();
       expect(typeof createComponent).toBe('function');
     });
 
     it('should call createComponent with name', async () => {
-      const { createComponent } = await import('../../lib/create');
+      const { createComponent } = await import('../../lib/cli/create');
 
       createComponent('MyButton');
 
@@ -119,7 +119,7 @@ describe('CLI Integration', () => {
     });
 
     it('should call createComponent with name and description', async () => {
-      const { createComponent } = await import('../../lib/create');
+      const { createComponent } = await import('../../lib/cli/create');
 
       createComponent('MyButton', 'A reusable button');
 
@@ -129,14 +129,14 @@ describe('CLI Integration', () => {
 
   describe('feature command', () => {
     it('should import createFeature function', async () => {
-      const { createFeature } = await import('../../lib/feature');
+      const { createFeature } = await import('../../lib/cli/feature');
 
       expect(createFeature).toBeDefined();
       expect(typeof createFeature).toBe('function');
     });
 
     it('should call createFeature with default options', async () => {
-      const { createFeature } = await import('../../lib/feature');
+      const { createFeature } = await import('../../lib/cli/feature');
 
       createFeature();
 
@@ -144,7 +144,7 @@ describe('CLI Integration', () => {
     });
 
     it('should call createFeature with issue option', async () => {
-      const { createFeature } = await import('../../lib/feature');
+      const { createFeature } = await import('../../lib/cli/feature');
 
       createFeature({ issue: true });
 
@@ -152,7 +152,7 @@ describe('CLI Integration', () => {
     });
 
     it('should support --no-issue flag', async () => {
-      const { createFeature } = await import('../../lib/feature');
+      const { createFeature } = await import('../../lib/cli/feature');
 
       createFeature({ issue: false });
 
@@ -250,19 +250,19 @@ describe('CLI Integration', () => {
 
   describe('command exports', () => {
     it('should export all required functions from lib/init', async () => {
-      const initModule = await import('../../lib/init');
+      const initModule = await import('../../lib/cli/init');
 
       expect(initModule.initTDD).toBeDefined();
     });
 
     it('should export all required functions from lib/create', async () => {
-      const createModule = await import('../../lib/create');
+      const createModule = await import('../../lib/cli/create');
 
       expect(createModule.createComponent).toBeDefined();
     });
 
     it('should export all required functions from lib/feature', async () => {
-      const featureModule = await import('../../lib/feature');
+      const featureModule = await import('../../lib/cli/feature');
 
       expect(featureModule.createFeature).toBeDefined();
     });

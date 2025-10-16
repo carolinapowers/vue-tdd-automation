@@ -1,6 +1,6 @@
 # Vue TDD Automation - Testing Checklist
 
-This document outlines the complete testing workflow for verifying new versions of the `@vue-tdd/automation` package.
+This document outlines the complete testing workflow for verifying new versions of the `@carolinappowers/vue-tdd-automation` package.
 
 ## Prerequisites
 
@@ -29,7 +29,7 @@ npm pack
 
 ```bash
 cd /path/to/test-project
-npm uninstall @vue-tdd/automation
+npm uninstall @carolinappowers/vue-tdd-automation
 npm install -D /Users/carolinapowers/Repos/vue-tdd-automation/vue-tdd-automation-X.X.X.tgz
 ```
 
@@ -250,7 +250,7 @@ Create a test file in test project:
 
 ```bash
 cat > test-exports.js << 'EOF'
-import { generateTestContent } from '@vue-tdd/automation/test-generator';
+import { generateTestContent } from '@carolinappowers/vue-tdd-automation/test-generator';
 console.log('✅ test-generator import works');
 console.log('✅ generateTestContent:', typeof generateTestContent);
 EOF
@@ -316,7 +316,7 @@ npx vue-tdd create CleanCheck "Quality check component"
 **Verification Checklist:**
 - [ ] Has shebang (`#!/usr/bin/env node`)
 - [ ] File is executable
-- [ ] Imports from `@vue-tdd/automation/test-generator` (not relative path)
+- [ ] Imports from `@carolinappowers/vue-tdd-automation/test-generator` (not relative path)
 - [ ] No module resolution errors when run
 
 ## Regression Tests
@@ -413,7 +413,7 @@ All tests must pass:
 
 **Solution:** Verify post-build script replaced relative imports with package imports:
 ```bash
-grep "@vue-tdd/automation/test-generator" dist/templates/scripts/tdd-feature.js
+grep "@carolinappowers/vue-tdd-automation/test-generator" dist/templates/scripts/tdd-feature.js
 ```
 
 ### Issue: Unused variable warnings
@@ -462,7 +462,7 @@ For automated testing, use this script:
 
 set -e
 
-echo "🧪 Testing @vue-tdd/automation package..."
+echo "🧪 Testing @carolinappowers/vue-tdd-automation package..."
 
 # Build and pack
 cd ~/Repos/vue-tdd-automation
@@ -471,7 +471,7 @@ TARBALL=$(npm pack)
 
 # Install in test project
 cd ~/Repos/gnow
-npm uninstall @vue-tdd/automation
+npm uninstall @carolinappowers/vue-tdd-automation
 npm install -D ~/Repos/vue-tdd-automation/$TARBALL
 
 # Run tests

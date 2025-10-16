@@ -215,8 +215,8 @@ Add workflow status badges to your README:
 
 ```markdown
 ![CI](https://github.com/carolinapowers/vue-tdd-automation/workflows/CI/badge.svg)
-![npm version](https://img.shields.io/npm/v/@vue-tdd/automation.svg)
-![npm downloads](https://img.shields.io/npm/dm/@vue-tdd/automation.svg)
+![npm version](https://img.shields.io/npm/v/@carolinappowers/vue-tdd-automation.svg)
+![npm downloads](https://img.shields.io/npm/dm/@carolinappowers/vue-tdd-automation.svg)
 [![codecov](https://codecov.io/gh/carolinapowers/vue-tdd-automation/branch/main/graph/badge.svg)](https://codecov.io/gh/carolinapowers/vue-tdd-automation)
 ```
 
