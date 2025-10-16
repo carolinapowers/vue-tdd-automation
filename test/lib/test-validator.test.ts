@@ -7,7 +7,7 @@ import {
   validateTestContent,
   validateTestStructure,
   performFullValidation
-} from '../../lib/test-generator/validator.js';
+} from '../../lib/shared/test-generator/validator.js';
 
 describe('Test Validator', () => {
   describe('validateTestContent', () => {

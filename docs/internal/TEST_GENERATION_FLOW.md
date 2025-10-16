@@ -596,14 +596,14 @@ This shows the entire flow from command to generated files:
 graph TD
     CMD[npx vue-tdd create Button] --> CLI[bin/cli.ts]
 
-    CLI --> CREATE[lib/create.ts]
+    CLI --> CREATE[lib/cli/create.ts]
     CREATE --> SCRIPT[scripts/create-tdd-component.js]
 
     SCRIPT --> GEN_COMP[Generate Component File]
     SCRIPT --> GEN_TEST[Generate Test File]
 
     GEN_COMP --> COMP_TEMPLATE[Minimal Vue scaffold]
-    GEN_TEST --> TEST_GEN[lib/test-generator/]
+    GEN_TEST --> TEST_GEN[lib/shared/test-generator/]
 
     TEST_GEN --> BUILD_REQ[Build requirements object]
     BUILD_REQ --> VALIDATE[Validate requirements]

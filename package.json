@@ -2,13 +2,13 @@
   "name": "@carolinappowers/vue-tdd-automation",
   "version": "0.1.1",
   "description": "Automated TDD workflow for Vue.js applications with Vitest and Testing Library",
-  "main": "dist/lib/init.js",
+  "main": "dist/lib/cli/init.js",
   "type": "module",
   "exports": {
-    ".": "./dist/lib/init.js",
-    "./test-generator/index.js": "./dist/lib/test-generator/index.js",
-    "./test-generator/validator.js": "./dist/lib/test-generator/validator.js",
-    "./test-generator/types.js": "./dist/lib/test-generator/types.js"
+    ".": "./dist/lib/cli/init.js",
+    "./shared/test-generator": "./dist/lib/shared/test-generator/index.js",
+    "./shared/test-generator/validator": "./dist/lib/shared/test-generator/validator.js",
+    "./shared/test-generator/types": "./dist/lib/shared/test-generator/types.js"
   },
   "bin": {
     "vue-tdd": "./dist/bin/cli.js"
@@ -16,13 +16,14 @@
   "scripts": {
     "build": "tsc && node dist/scripts/post-build.js",
     "prepublishOnly": "npm run build",
+    "prepare": "npm run build || true && husky || true",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
-    "prepare": "husky"
+    "dev:create-test-project": "scripts/dev/create-test-project.sh"
   },
   "keywords": [
     "vue",

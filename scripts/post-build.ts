@@ -13,11 +13,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const projectRoot = path.join(__dirname, '..', '..'); // Go up from dist/scripts/ to project root
-const distScripts = path.join(projectRoot, 'dist', 'lib', 'scripts');
+const distGithubActions = path.join(projectRoot, 'dist', 'lib', 'github-actions');
 const distTemplatesScripts = path.join(projectRoot, 'dist', 'templates', 'scripts');
 const sourceTemplates = path.join(projectRoot, 'templates');
 
-// Files to copy from compiled lib/scripts to dist/templates/scripts
+// Files to copy from compiled lib/github-actions to dist/templates/scripts
 const filesToCopy = [
   'create-tdd-component.js',
   'generate-tests-from-issue.js',
@@ -40,7 +40,7 @@ try {
   // Step 3: Copy compiled scripts to dist/templates/scripts
   console.log('📜 Copying compiled scripts...');
   for (const file of filesToCopy) {
-    const src = path.join(distScripts, file);
+    const src = path.join(distGithubActions, file);
     const dest = path.join(distTemplatesScripts, file);
 
     if (!fs.existsSync(src)) {
@@ -57,16 +57,16 @@ try {
     // For scripts that use test-generator, replace relative imports with package imports
     if (file === 'tdd-feature.js' || file === 'generate-tests-from-issue.js') {
       content = content.replace(
-        /from ['"]\.\.\/test-generator\/index\.js['"]/g,
-        "from '@carolinappowers/vue-tdd-automation/test-generator/index.js'"
+        /from ['"]\.\.\/shared\/test-generator\/index\.js['"]/g,
+        "from '@carolinappowers/vue-tdd-automation/shared/test-generator'"
       );
       content = content.replace(
-        /from ['"]\.\.\/test-generator\/validator\.js['"]/g,
-        "from '@carolinappowers/vue-tdd-automation/test-generator/validator.js'"
+        /from ['"]\.\.\/shared\/test-generator\/validator\.js['"]/g,
+        "from '@carolinappowers/vue-tdd-automation/shared/test-generator/validator'"
       );
       content = content.replace(
-        /from ['"]\.\.\/test-generator\/types\.js['"]/g,
-        "from '@carolinappowers/vue-tdd-automation/test-generator/types.js'"
+        /from ['"]\.\.\/shared\/test-generator\/types\.js['"]/g,
+        "from '@carolinappowers/vue-tdd-automation/shared/test-generator/types'"
       );
     }
 
