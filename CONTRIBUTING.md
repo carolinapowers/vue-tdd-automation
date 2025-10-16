@@ -1,4 +1,4 @@
-# Contributing to @vue-tdd/automation
+# Contributing to @carolinappowers/vue-tdd-automation
 
 Thank you for your interest in contributing!
 
@@ -55,16 +55,37 @@ This compiles TypeScript to JavaScript in the `dist/` directory.
 
 ### Testing Locally
 
-Link the package locally to test it:
+There are several ways to test your changes:
+
+**Option 1: Install from branch (recommended for testing specific branches)**
+
+```bash
+# Install to a test app from your current branch
+npm run dev:install -- ~/path/to/test-app
+
+# Install from a specific branch
+npm run dev:install -- ~/path/to/test-app feature/my-branch
+```
+
+**Option 2: Using npm link (good for iterative development)**
 
 ```bash
 # In vue-tdd-automation directory
+npm run build
 npm link
 
 # In a test Vue project
-npm link @vue-tdd/automation
+npm link @carolinappowers/vue-tdd-automation
 npx vue-tdd init
 ```
+
+**Option 3: Create a fresh test project**
+
+```bash
+npm run dev:create-test-project
+```
+
+See [scripts/dev/README.md](./scripts/dev/README.md) for more details on development scripts.
 
 ### Making Changes
 

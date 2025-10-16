@@ -1,6 +1,6 @@
 # Test Generation System - Detailed Flow
 
-This document provides an in-depth look at how the test generation system works in `@vue-tdd/automation`.
+This document provides an in-depth look at how the test generation system works in `@carolinappowers/vue-tdd-automation`.
 
 ## Table of Contents
 

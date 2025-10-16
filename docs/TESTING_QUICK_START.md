@@ -1,6 +1,6 @@
 # Testing Quick Start Guide
 
-Quick reference for testing the `@vue-tdd/automation` package locally.
+Quick reference for testing the `@carolinappowers/vue-tdd-automation` package locally.
 
 ## Unit Tests
 
@@ -20,6 +20,21 @@ npm run test:ui
 
 ## Local Package Testing (Quick)
 
+### Using install-from-branch script (recommended)
+
+```bash
+# Install from current branch to test app
+npm run dev:install -- ~/path/to/test-app
+
+# Install from specific branch to test app
+npm run dev:install -- ~/path/to/test-app refactor/my-branch
+
+# Test it
+cd ~/path/to/test-app
+npx vue-tdd init
+npx vue-tdd create MyButton
+```
+
 ### Using npm link
 
 ```bash
@@ -29,14 +44,14 @@ npm link
 
 # 2. In your Vue test project
 cd /path/to/your/vue-project
-npm link @vue-tdd/automation
+npm link @carolinappowers/vue-tdd-automation
 
 # 3. Test it
 npx vue-tdd init
 npx vue-tdd create MyButton
 
 # 4. Cleanup
-npm unlink @vue-tdd/automation
+npm unlink @carolinappowers/vue-tdd-automation
 ```
 
 ### Using npm pack
@@ -132,7 +147,7 @@ open coverage/index.html
 **Link not working?**
 ```bash
 npm run build && npm link
-cd /path/to/test-project && npm link @vue-tdd/automation
+cd /path/to/test-project && npm link @carolinappowers/vue-tdd-automation
 ```
 
 **Changes not reflected?**

@@ -1,6 +1,6 @@
 # Vue TDD Automation - Package Architecture
 
-This document provides a comprehensive overview of how the `@vue-tdd/automation` package works, with visual diagrams and detailed explanations.
+This document provides a comprehensive overview of how the `@carolinappowers/vue-tdd-automation` package works, with visual diagrams and detailed explanations.
 
 ## Table of Contents
 
@@ -15,7 +15,7 @@ This document provides a comprehensive overview of how the `@vue-tdd/automation`
 
 ## Package Overview
 
-`@vue-tdd/automation` is an NPM package that automates Test-Driven Development (TDD) workflows for Vue.js applications. It provides:
+`@carolinappowers/vue-tdd-automation` is an NPM package that automates Test-Driven Development (TDD) workflows for Vue.js applications. It provides:
 
 - **CLI Tool** (`vue-tdd`) - Command-line interface for developers
 - **Test Generator** - Automated test file creation from requirements
@@ -756,7 +756,7 @@ graph LR
 
 ## Summary
 
-The `@vue-tdd/automation` package provides a complete TDD automation solution for Vue.js projects through:
+The `@carolinappowers/vue-tdd-automation` package provides a complete TDD automation solution for Vue.js projects through:
 
 1. **CLI Tool** - Easy-to-use commands for initialization and component creation
 2. **Test Generator** - Intelligent test generation with multiple modes (AI, Copilot, Scaffold)

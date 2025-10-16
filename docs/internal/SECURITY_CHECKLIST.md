@@ -1,4 +1,4 @@
-# Security Checklist for Publishing @vue-tdd/automation
+# Security Checklist for Publishing @carolinappowers/vue-tdd-automation
 
 ## ✅ Completed Security Measures
 
@@ -74,7 +74,7 @@ npm version 0.1.0-alpha.0
 npm publish --tag alpha --access public
 
 # Users install with:
-# npm install @vue-tdd/automation@alpha
+# npm install @carolinappowers/vue-tdd-automation@alpha
 ```
 
 #### Option B: Beta Release
@@ -86,7 +86,7 @@ npm version 0.1.0-beta.0
 npm publish --tag beta --access public
 
 # Users install with:
-# npm install @vue-tdd/automation@beta
+# npm install @carolinappowers/vue-tdd-automation@beta
 ```
 
 #### Option C: Stable Release (After thorough testing)
@@ -98,18 +98,18 @@ npm version 0.1.0
 npm publish --access public --provenance
 
 # Users install with:
-# npm install @vue-tdd/automation
+# npm install @carolinappowers/vue-tdd-automation
 ```
 
 ### 4. Post-Publishing Verification
 ```bash
 # Check package was published
-npm view @vue-tdd/automation
+npm view @carolinappowers/vue-tdd-automation
 
 # Test installation in a fresh project
 mkdir test-install && cd test-install
 npm init -y
-npm install @vue-tdd/automation
+npm install @carolinappowers/vue-tdd-automation
 npx vue-tdd --version
 ```
 
@@ -159,13 +159,13 @@ npm version 0.1.0-alpha.0
 npm publish --tag alpha --access public
 
 # 4. Test the published package
-npm install -g @vue-tdd/automation@alpha
+npm install -g @carolinappowers/vue-tdd-automation@alpha
 vue-tdd --version
 ```
 
 ## 📝 Notes
 
-- The package name `@vue-tdd/automation` uses the `@vue-tdd` scope
+- The package name `@carolinappowers/vue-tdd-automation` uses the `@vue-tdd` scope
 - Publishing to a scoped package requires organization access or paid npm account
 - If you don't have access to `@vue-tdd`, consider:
   - Publishing as `vue-tdd-automation` (no scope)
