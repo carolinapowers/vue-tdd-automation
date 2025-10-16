@@ -16,13 +16,13 @@
   "scripts": {
     "build": "tsc && node dist/scripts/post-build.js",
     "prepublishOnly": "npm run build",
+    "prepare": "npm run build || true && husky || true",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
-    "prepare": "husky",
     "dev:create-test-project": "scripts/dev/create-test-project.sh"
   },
   "keywords": [
