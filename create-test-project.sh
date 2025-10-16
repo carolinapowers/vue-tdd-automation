@@ -20,7 +20,7 @@ fi
 
 # Pack the package
 echo -e "\n${YELLOW}📦 Packing package...${NC}"
-TARBALL=$(npm pack)
+TARBALL=$(npm pack 2>&1 | grep -E '\.tgz$' | tail -1)
 
 if [ $? -ne 0 ]; then
   echo -e "${RED}❌ Pack failed${NC}"
@@ -37,7 +37,7 @@ cd "$TEST_DIR"
 
 # Create Vue project non-interactively
 echo -e "\n${YELLOW}🎨 Creating Vue project...${NC}"
-npm create vue@latest test-app -- --typescript --vitest --skip-git
+npm create vue@latest test-app -- --typescript --vitest
 
 if [ $? -ne 0 ]; then
   echo -e "${RED}❌ Vue project creation failed${NC}"
