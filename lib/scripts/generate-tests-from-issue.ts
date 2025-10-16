@@ -18,6 +18,13 @@ if (!componentName || !requirementsJson) {
   process.exit(1);
 }
 
+// Validate component name to prevent path traversal
+if (!/^[A-Z][a-zA-Z0-9]*$/.test(componentName)) {
+  console.error('❌ Invalid component name. Must be PascalCase (e.g., MyComponent)');
+  console.error('Component names can only contain letters and numbers, and must start with an uppercase letter.');
+  process.exit(1);
+}
+
 // Check for generation flags
 const aiGenerate = flags.includes('--ai-generate') || process.env.AI_GENERATE === 'true';
 const copilotReady = flags.includes('--copilot-ready') || process.env.COPILOT_READY === 'true';
