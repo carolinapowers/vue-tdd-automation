@@ -5,7 +5,16 @@
 import { execSync } from 'child_process';
 import path from 'path';
 
-export function createComponent(name: string, description: string = ''): void {
+export interface CreateComponentOptions {
+  aiGenerate?: boolean;
+  copilotReady?: boolean;
+}
+
+export function createComponent(
+  name: string,
+  description: string = '',
+  options: CreateComponentOptions = {}
+): void {
   const cwd = process.cwd();
 
   // Check if scripts exist
@@ -13,7 +22,10 @@ export function createComponent(name: string, description: string = ''): void {
 
   try {
     const desc = description || `Component: ${name}`;
-    execSync(`node "${scriptPath}" "${name}" "${desc}"`, {
+    const aiFlag = options.aiGenerate ? '--ai-generate' : '';
+    const copilotFlag = options.copilotReady ? '--copilot-ready' : '';
+    const flags = [aiFlag, copilotFlag].filter(Boolean).join(' ');
+    execSync(`node "${scriptPath}" "${name}" "${desc}" ${flags}`, {
       cwd,
       stdio: 'inherit'
     });

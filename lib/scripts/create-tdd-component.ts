@@ -24,6 +24,13 @@ if (!componentName) {
   process.exit(1);
 }
 
+// Validate component name to prevent path traversal
+if (!/^[A-Z][a-zA-Z0-9]*$/.test(componentName)) {
+  console.error('❌ Invalid component name. Must be PascalCase (e.g., MyComponent)');
+  console.log('Component names can only contain letters and numbers, and must start with an uppercase letter.');
+  process.exit(1);
+}
+
 // Paths
 const componentsDir = path.join(__dirname, '..', 'src', 'components');
 const testFile = path.join(componentsDir, `${componentName}.test.ts`);

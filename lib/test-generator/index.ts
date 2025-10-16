@@ -11,26 +11,43 @@ import type {
   TestSectionContext,
   ValidationResult
 } from './types.js';
+import { generateTestWithAI, validateAIConfig } from './ai-generator.js';
+import { generateEnhancedScaffold, type EnhancedScaffoldContext } from './enhanced-scaffold.js';
+import { generateCopilotScaffold, type CopilotScaffoldContext } from './copilot-scaffold.js';
 
 /**
  * Generates a complete test file content based on requirements
  */
-export function generateTestContent(
+export async function generateTestContent(
   componentName: string,
   requirements: TestRequirements,
   options: TestGenerationOptions = {}
-): string {
+): Promise<string> {
   const {
     userStory = '',
     acceptanceCriteria = [],
     happyPath = [],
     edgeCases = [],
     errorCases = [],
-    props = ''
-    // events is available in requirements but not currently used in generation
+    props = '',
+    events = ''
   } = requirements;
 
-  const { issueNumber, issueTitle } = options;
+  const { issueNumber, issueTitle, aiGenerate = false, copilotReady = false } = options;
+
+  // Log generation mode
+  if (aiGenerate) {
+    const config = validateAIConfig();
+    if (config.valid) {
+      console.log(`✨ AI test generation enabled (${config.provider})`);
+    } else {
+      console.log(`⚠️  AI generation requested but ${config.message}`);
+      console.log('📝 Falling back to enhanced scaffolds');
+    }
+  } else if (copilotReady) {
+    console.log('🤖 Copilot-optimized scaffolds enabled');
+    console.log('💡 These tests are designed for easy completion with GitHub Copilot');
+  }
 
   // Build header comment
   let headerComment = `/**\n * ${componentName} Component Tests\n`;
@@ -57,52 +74,61 @@ import ${componentName} from './${componentName}.vue'
   // Build test sections
   const sections: string[] = [];
 
+  const sectionContext = {
+    props,
+    events,
+    userStory,
+    acceptanceCriteria,
+    aiGenerate,
+    copilotReady
+  };
+
   // Acceptance Criteria section
   if (acceptanceCriteria.length > 0) {
-    sections.push(generateTestSection(
+    sections.push(await generateTestSection(
       'Acceptance Criteria',
       acceptanceCriteria,
       componentName,
       'acceptance',
-      { props }
+      sectionContext
     ));
   }
 
   // Happy Path section
   if (happyPath.length > 0) {
-    sections.push(generateTestSection(
+    sections.push(await generateTestSection(
       'Happy Path',
       happyPath,
       componentName,
       'happy',
-      { props }
+      sectionContext
     ));
   }
 
   // Edge Cases section
   if (edgeCases.length > 0) {
-    sections.push(generateTestSection(
+    sections.push(await generateTestSection(
       'Edge Cases',
       edgeCases,
       componentName,
       'edge',
-      { props }
+      sectionContext
     ));
   }
 
   // Error Handling section
   if (errorCases.length > 0) {
-    sections.push(generateTestSection(
+    sections.push(await generateTestSection(
       'Error Handling',
       errorCases,
       componentName,
       'error',
-      { props }
+      sectionContext
     ));
   }
 
   // Accessibility section (always included)
-  sections.push(generateAccessibilitySection(componentName));
+  sections.push(await generateAccessibilitySection(componentName, sectionContext));
 
   // Combine all sections
   const testBody = `
@@ -125,31 +151,33 @@ ${sections.join('\n\n')}
 /**
  * Generates a test section with multiple test cases
  */
-function generateTestSection(
+async function generateTestSection(
   sectionTitle: string,
   scenarios: string[],
   componentName: string,
   type: TestCaseType,
   context: TestSectionContext = {}
-): string {
-  const testCases = scenarios.map(scenario =>
-    generateTestCase(scenario, componentName, type, context)
-  ).join('\n\n');
+): Promise<string> {
+  const testCases = await Promise.all(
+    scenarios.map(scenario =>
+      generateTestCase(scenario, componentName, type, context)
+    )
+  );
 
   return `  describe('${sectionTitle}', () => {
-${testCases}
+${testCases.join('\n\n')}
   });`;
 }
 
 /**
  * Generates a single test case
  */
-function generateTestCase(
+async function generateTestCase(
   scenario: string,
   componentName: string,
   type: TestCaseType,
   context: TestSectionContext = {}
-): string {
+): Promise<string> {
   const testName = normalizeTestName(scenario);
   const verb = type === 'edge' || type === 'error' ? 'handle' : '';
   const description = verb ? `${verb} ${testName}` : testName;
@@ -161,48 +189,120 @@ function generateTestCase(
     error: 'Error Case'
   };
 
-  const propsComment = context.props
-    ? `\n      // TODO: Add required props based on: ${context.props}`
-    : '';
+  // Try AI generation if enabled
+  if (context.aiGenerate) {
+    const aiResult = await generateTestWithAI({
+      componentName,
+      scenario,
+      type: type as 'acceptance' | 'happy' | 'edge' | 'error' | 'accessibility',
+      props: context.props,
+      events: context.events,
+      userStory: context.userStory,
+      acceptanceCriteria: context.acceptanceCriteria
+    });
 
-  return `    it('should ${description}', async () => {
+    if (aiResult) {
+      return `    it('should ${description}', async () => {
       // ${typeLabel[type]}: ${scenario}
-      const { user } = render(${componentName}${context.props ? `, {
-        props: {${propsComment}
-        }
-      }` : ''});
-
-      // TODO: Implement test for: ${scenario}
-
-      expect(true).toBe(false); // Red phase - this should fail
+${aiResult.split('\n').map(line => `      ${line}`).join('\n')}
     });`;
+    }
+  }
+
+  // Use Copilot-optimized scaffold if enabled
+  if (context.copilotReady) {
+    const copilotContext: CopilotScaffoldContext = {
+      componentName,
+      scenario,
+      type: type as 'acceptance' | 'happy' | 'edge' | 'error' | 'accessibility',
+      description,
+      props: context.props,
+      events: context.events,
+      userStory: context.userStory,
+      acceptanceCriteria: context.acceptanceCriteria
+    };
+
+    return generateCopilotScaffold(copilotContext);
+  }
+
+  // Fallback to enhanced scaffold
+  const scaffoldContext: EnhancedScaffoldContext = {
+    componentName,
+    scenario,
+    type: type as 'acceptance' | 'happy' | 'edge' | 'error' | 'accessibility',
+    description,
+    props: context.props,
+    events: context.events
+  };
+
+  return generateEnhancedScaffold(scaffoldContext);
 }
 
 /**
  * Generates the accessibility test section
  */
-function generateAccessibilitySection(componentName: string): string {
+async function generateAccessibilitySection(
+  componentName: string,
+  context: TestSectionContext = {}
+): Promise<string> {
+  const scenarios = [
+    { description: 'be accessible to screen readers', scenario: 'Component should have proper ARIA labels and semantic HTML' },
+    { description: 'be keyboard navigable', scenario: 'User should be able to navigate and interact using keyboard only' }
+  ];
+
+  const testCases = await Promise.all(
+    scenarios.map(async ({ description, scenario }) => {
+      // Try AI generation if enabled
+      if (context.aiGenerate) {
+        const aiResult = await generateTestWithAI({
+          componentName,
+          scenario,
+          type: 'accessibility',
+          props: context.props,
+          events: context.events,
+          userStory: context.userStory,
+          acceptanceCriteria: context.acceptanceCriteria
+        });
+
+        if (aiResult) {
+          return `    it('should ${description}', async () => {
+${aiResult.split('\n').map(line => `      ${line}`).join('\n')}
+    });`;
+        }
+      }
+
+      // Use Copilot-optimized scaffold if enabled
+      if (context.copilotReady) {
+        const copilotContext: CopilotScaffoldContext = {
+          componentName,
+          scenario,
+          type: 'accessibility',
+          description,
+          props: context.props,
+          events: context.events,
+          userStory: context.userStory,
+          acceptanceCriteria: context.acceptanceCriteria
+        };
+
+        return generateCopilotScaffold(copilotContext);
+      }
+
+      // Fallback to enhanced scaffold
+      const scaffoldContext: EnhancedScaffoldContext = {
+        componentName,
+        scenario,
+        type: 'accessibility',
+        description,
+        props: context.props,
+        events: context.events
+      };
+
+      return generateEnhancedScaffold(scaffoldContext);
+    })
+  );
+
   return `  describe('Accessibility', () => {
-    it('should be accessible to screen readers', () => {
-      render(${componentName});
-
-      // TODO: Add accessibility checks
-      // - Check for proper ARIA labels
-      // - Verify semantic HTML elements
-      // - Ensure proper heading hierarchy
-
-      expect(true).toBe(false); // Red phase - this should fail
-    });
-
-    it('should be keyboard navigable', async () => {
-      const { user } = render(${componentName});
-
-      // TODO: Test keyboard navigation
-      // await user.tab();
-      // expect(element).toHaveFocus();
-
-      expect(true).toBe(false); // Red phase - this should fail
-    });
+${testCases.join('\n\n')}
   });`;
 }
 

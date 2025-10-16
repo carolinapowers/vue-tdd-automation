@@ -40,7 +40,16 @@ async function main(): Promise<void> {
   console.log('This tool will create a GitHub issue and automatically set up TDD for your feature.\n');
 
   // Collect feature information
-  const componentName = await prompt(`${colors.yellow}Component name (PascalCase):${colors.reset} `);
+  const componentNameInput = await prompt(`${colors.yellow}Component name (PascalCase):${colors.reset} `);
+
+  // Validate component name to prevent path traversal
+  if (!/^[A-Z][a-zA-Z0-9]*$/.test(componentNameInput)) {
+    console.error(`${colors.red}❌ Invalid component name. Must be PascalCase (e.g., MyComponent)${colors.reset}`);
+    rl.close();
+    process.exit(1);
+  }
+
+  const componentName = componentNameInput;
   const description = await prompt(`${colors.yellow}Brief description:${colors.reset} `);
   const userType = await prompt(`${colors.yellow}User type (e.g., user, admin, guest):${colors.reset} `);
   const feature = await prompt(`${colors.yellow}What feature do they want?${colors.reset} `);
@@ -212,7 +221,11 @@ ${issueBody}`);
       events
     };
 
-    const testContent = generateTestContent(componentName, requirements);
+    // Check for generation flags
+    const aiGenerate = process.env.FEATURE_AI_GENERATE === 'true';
+    const copilotReady = process.env.FEATURE_COPILOT_READY === 'true';
+
+    const testContent = await generateTestContent(componentName, requirements, { aiGenerate, copilotReady });
 
     fs.writeFileSync(testFile, testContent);
 

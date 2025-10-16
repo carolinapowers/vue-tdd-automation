@@ -37,6 +37,12 @@ export interface TestGenerationOptions {
 
   /** GitHub issue title (optional) */
   issueTitle?: string;
+
+  /** Enable AI-powered test generation (requires API key) */
+  aiGenerate?: boolean;
+
+  /** Generate Copilot-optimized scaffolds with rich context (helps Copilot suggest better completions) */
+  copilotReady?: boolean;
 }
 
 /**
@@ -95,4 +101,25 @@ export interface TestSectionContext {
 
   /** Component events definition */
   events?: string;
+
+  /** User story for context */
+  userStory?: string;
+
+  /** Acceptance criteria for context */
+  acceptanceCriteria?: string[];
+
+  /** Enable AI generation */
+  aiGenerate?: boolean;
+
+  /** Enable Copilot-optimized scaffolds */
+  copilotReady?: boolean;
+}
+
+/**
+ * Test scenario for enhanced scaffold generation
+ */
+export interface TestScenario {
+  type: 'acceptance' | 'happy' | 'edge' | 'error' | 'accessibility';
+  description: string;
+  scenario: string;
 }

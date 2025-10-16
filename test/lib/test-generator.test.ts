@@ -66,7 +66,7 @@ describe('Test Generator', () => {
   });
 
   describe('generateTestContent', () => {
-    it('should generate valid test content with all sections', () => {
+    it('should generate valid test content with all sections', async () => {
       const requirements: TestRequirements = {
         userStory: 'As a user, I want to see a button',
         acceptanceCriteria: ['Button is visible', 'Button is clickable'],
@@ -77,7 +77,7 @@ describe('Test Generator', () => {
         events: 'click, focus'
       };
 
-      const content = generateTestContent('TestButton', requirements);
+      const content = await generateTestContent('TestButton', requirements);
 
       // Check header
       expect(content).toContain('TestButton Component Tests');
@@ -109,16 +109,16 @@ describe('Test Generator', () => {
 
       // Check TDD red phase
       expect(content).toContain('expect(true).toBe(false)');
-      expect(content).toContain('// Red phase');
+      expect(content).toContain('TDD - Red phase');
     });
 
-    it('should include issue information when provided', () => {
+    it('should include issue information when provided', async () => {
       const requirements: TestRequirements = {
         userStory: 'As a user, I want to see a button',
         acceptanceCriteria: ['Button is visible']
       };
 
-      const content = generateTestContent('TestButton', requirements, {
+      const content = await generateTestContent('TestButton', requirements, {
         issueNumber: 42,
         issueTitle: 'Add button component'
       });
@@ -127,13 +127,13 @@ describe('Test Generator', () => {
       expect(content).toContain('Add button component');
     });
 
-    it('should handle minimal requirements', () => {
+    it('should handle minimal requirements', async () => {
       const requirements: TestRequirements = {
         userStory: 'As a user, I want a component',
         happyPath: ['Component renders']
       };
 
-      const content = generateTestContent('MinimalComponent', requirements);
+      const content = await generateTestContent('MinimalComponent', requirements);
 
       expect(content).toContain("describe('MinimalComponent Component'");
       expect(content).toContain("describe('Happy Path'");
@@ -141,40 +141,40 @@ describe('Test Generator', () => {
       expect(content).toContain("describe('Accessibility'"); // Always included
     });
 
-    it('should normalize test names', () => {
+    it('should normalize test names', async () => {
       const requirements: TestRequirements = {
         userStory: 'Test',
         acceptanceCriteria: ['User can click the "Submit" button!']
       };
 
-      const content = generateTestContent('TestComponent', requirements);
+      const content = await generateTestContent('TestComponent', requirements);
 
       // Should normalize to lowercase and remove special characters
       expect(content).toContain("should user can click the submit button");
     });
 
-    it('should include TODO comments for guidance', () => {
+    it('should include TODO comments for guidance', async () => {
       const requirements: TestRequirements = {
         userStory: 'Test',
         acceptanceCriteria: ['Test criterion']
       };
 
-      const content = generateTestContent('TestComponent', requirements);
+      const content = await generateTestContent('TestComponent', requirements);
 
       expect(content).toContain('// TODO:');
     });
 
-    it('should include accessibility tests', () => {
+    it('should include accessibility tests', async () => {
       const requirements: TestRequirements = {
         userStory: 'Test',
         acceptanceCriteria: ['Test']
       };
 
-      const content = generateTestContent('TestComponent', requirements);
+      const content = await generateTestContent('TestComponent', requirements);
 
       expect(content).toContain('should be accessible to screen readers');
       expect(content).toContain('should be keyboard navigable');
-      expect(content).toContain('// TODO: Add accessibility checks');
+      expect(content).toContain('// TODO: Verify screen reader accessibility');
     });
   });
 });
