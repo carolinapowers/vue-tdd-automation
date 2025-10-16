@@ -7,7 +7,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import chalk from 'chalk';
-import { parseJson, isPackageJson } from './json-utils.js';
+import { parseJson, isPackageJson } from '../shared/json-utils.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -36,8 +36,8 @@ export function initTDD(options: InitOptions = {}): void {
   } = options;
 
   const cwd = process.cwd();
-  // Templates are in dist/templates, up 1 level from dist/lib
-  const templatesDir = path.join(__dirname, '../templates');
+  // Templates are in dist/templates, up 2 levels from dist/lib/cli
+  const templatesDir = path.join(__dirname, '../../templates');
 
   // Verify templates directory exists
   if (!fs.existsSync(templatesDir)) {
@@ -185,20 +185,49 @@ function updatePackageJson(packageJsonPath: string): void {
     'tdd:feature': 'node scripts/tdd-feature.js'
   };
 
-  packageJson.scripts = packageJson.scripts || {};
+  // Add required dependencies if they don't exist
+  const depsToAdd: Record<string, string> = {
+    '@testing-library/jest-dom': '^6.0.0',
+    '@testing-library/user-event': '^14.0.0',
+    '@testing-library/vue': '^8.0.0',
+    '@types/node': '^22.0.0',
+    '@vitejs/plugin-vue': '^6.0.0',
+    '@vue/test-utils': '^2.4.0',
+    '@vitest/ui': '^3.0.0',
+    '@vitest/coverage-v8': '^3.0.0',
+    'happy-dom': '^15.0.0',
+    'vitest': '^3.0.0'
+  };
 
-  let added = false;
+  packageJson.scripts = packageJson.scripts || {};
+  packageJson.devDependencies = packageJson.devDependencies || {};
+
+  let scriptsAdded = false;
+  let depsAdded = false;
+
   for (const [name, command] of Object.entries(scriptsToAdd)) {
     if (!packageJson.scripts[name]) {
       packageJson.scripts[name] = command;
       console.log(chalk.green(`✅ Added script: ${name}`));
-      added = true;
+      scriptsAdded = true;
     }
   }
 
-  if (added) {
+  for (const [name, version] of Object.entries(depsToAdd)) {
+    if (!packageJson.devDependencies[name] && !packageJson.dependencies?.[name]) {
+      packageJson.devDependencies[name] = version;
+      console.log(chalk.green(`✅ Added dependency: ${name}@${version}`));
+      depsAdded = true;
+    }
+  }
+
+  if (scriptsAdded || depsAdded) {
     fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
+
+    if (depsAdded) {
+      console.log(chalk.yellow('\n⚠️  Dependencies added to package.json. Run npm install to install them.\n'));
+    }
   } else {
-    console.log(chalk.gray('⏭️  All scripts already exist'));
+    console.log(chalk.gray('⏭️  All scripts and dependencies already exist'));
   }
 }

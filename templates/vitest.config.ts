@@ -56,9 +56,6 @@ export default defineConfig({
     
     // Reporter configuration for better output
     reporters: ['default'],
-    
-    // Watch configuration
-    watchExclude: ['**/node_modules/**', '**/dist/**'],
   },
   
   resolve: {

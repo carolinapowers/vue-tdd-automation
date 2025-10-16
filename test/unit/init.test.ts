@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import fs from 'fs';
-import { initTDD } from '../../lib/init';
+import { initTDD } from '../../lib/cli/init';
 
 // Mock fs module
 vi.mock('fs');

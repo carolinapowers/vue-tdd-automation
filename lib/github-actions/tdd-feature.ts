@@ -10,8 +10,8 @@ import readline from 'readline';
 import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
-import { generateTestContent } from '../test-generator/index.js';
-import type { TestRequirements } from '../test-generator/types.js';
+import { generateTestContent } from '../shared/test-generator/index.js';
+import type { TestRequirements } from '../shared/test-generator/types.js';
 
 const rl = readline.createInterface({
   input: process.stdin,
