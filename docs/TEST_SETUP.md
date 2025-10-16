@@ -7,9 +7,9 @@ This project uses Vitest for testing the CLI tool and library functions.
 ```
 test/
 ├── unit/                    # Unit tests for library functions
-│   ├── init.test.ts        # Tests for lib/init.ts
-│   ├── create.test.ts      # Tests for lib/create.ts
-│   └── feature.test.ts     # Tests for lib/feature.ts
+│   ├── init.test.ts        # Tests for lib/cli/init.ts
+│   ├── create.test.ts      # Tests for lib/cli/create.ts
+│   └── feature.test.ts     # Tests for lib/cli/feature.ts
 ├── integration/            # Integration tests
 │   └── cli.test.ts         # CLI integration tests
 └── fixtures/               # Test fixtures (currently empty)
@@ -42,9 +42,9 @@ Coverage thresholds (configured in `vitest.config.ts`):
 - Statements: 80%
 
 Coverage by file:
-- `lib/create.ts`: 100%
-- `lib/feature.ts`: 100%
-- `lib/init.ts`: 95.53%
+- `lib/cli/create.ts`: 100%
+- `lib/cli/feature.ts`: 100%
+- `lib/cli/init.ts`: 95.53%
 - `bin/cli.ts`: Excluded from coverage (CLI entry point - glue code)
 
 ## Test Details

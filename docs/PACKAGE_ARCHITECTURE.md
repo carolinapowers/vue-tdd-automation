@@ -430,18 +430,27 @@ vue-tdd-automation/
 │   └── cli.ts                      # CLI entry point (vue-tdd command)
 │
 ├── lib/
-│   ├── init.ts                     # Initialize TDD in project
-│   ├── create.ts                   # Create component with tests
-│   ├── feature.ts                  # Interactive feature wizard
-│   ├── json-utils.ts               # JSON parsing utilities
+│   ├── cli/                        # Self-contained CLI commands
+│   │   ├── init.ts                # Initialize TDD in project
+│   │   ├── create.ts              # Create component with tests
+│   │   └── feature.ts             # Interactive feature wizard
 │   │
-│   └── test-generator/
-│       ├── index.ts                # Main test generator orchestrator
-│       ├── types.ts                # TypeScript interfaces
-│       ├── ai-generator.ts         # AI-powered test generation
-│       ├── enhanced-scaffold.ts    # Scaffold with TODOs
-│       ├── copilot-scaffold.ts     # Copilot-optimized scaffolds
-│       └── validator.ts            # Requirement validation
+│   ├── github-actions/            # Scripts for GitHub Actions workflows
+│   │   ├── create-tdd-component.ts
+│   │   ├── generate-tests-from-issue.ts
+│   │   └── tdd-feature.ts
+│   │
+│   └── shared/                    # Shared between CLI and GitHub Actions
+│       ├── test-generator/
+│       │   ├── index.ts          # Main test generator orchestrator
+│       │   ├── types.ts          # TypeScript interfaces
+│       │   └── validator.ts      # Requirement validation
+│       └── json-utils.ts         # JSON parsing utilities
+│
+├── scripts/
+│   ├── post-build.ts              # Build script
+│   └── dev/                       # Development tools (not distributed)
+│       └── create-test-project.sh
 │
 ├── templates/
 │   ├── test/
@@ -451,11 +460,6 @@ vue-tdd-automation/
 │   │       ├── testing-library.ts  # Testing Library helpers
 │   │       ├── vue-testing.ts      # Vue Test Utils helpers
 │   │       └── composables-testing.ts
-│   │
-│   ├── scripts/
-│   │   ├── tdd-feature.js          # Interactive wizard script
-│   │   ├── create-tdd-component.js # Component creation script
-│   │   └── generate-tests-from-issue.js
 │   │
 │   ├── github/
 │   │   ├── workflows/
@@ -475,7 +479,14 @@ vue-tdd-automation/
 ├── dist/                           # Compiled JavaScript output
 │   ├── bin/
 │   ├── lib/
+│   │   ├── cli/
+│   │   ├── github-actions/
+│   │   └── shared/
 │   └── templates/
+│       └── scripts/                # Compiled scripts with shebangs
+│           ├── create-tdd-component.js
+│           ├── generate-tests-from-issue.js
+│           └── tdd-feature.js
 │
 └── package.json                    # Package metadata
 ```
@@ -500,7 +511,7 @@ The main entry point for the `vue-tdd` command. Uses Commander.js for CLI parsin
 - `--copilot` - Add Copilot instructions
 - `--force` - Overwrite existing files
 
-### 2. Init Module (`lib/init.ts`)
+### 2. Init Module (`lib/cli/init.ts`)
 
 Copies template files to the user's project and sets up the TDD infrastructure.
 
@@ -519,7 +530,7 @@ Copies template files to the user's project and sets up the TDD infrastructure.
 - `.github/workflows/*` - GitHub Actions
 - Documentation files
 
-### 3. Test Generator (`lib/test-generator/index.ts`)
+### 3. Test Generator (`lib/shared/test-generator/index.ts`)
 
 The orchestrator for test file generation. Coordinates between AI, Copilot, and scaffold generators.
 
@@ -619,22 +630,22 @@ Generates scaffolds optimized for GitHub Copilot completion with rich context.
 **Purpose:**
 Maximizes Copilot's ability to suggest accurate completions by providing extensive context.
 
-### 7. Scripts (`templates/scripts/`)
+### 7. Scripts (`lib/github-actions/`)
 
-JavaScript scripts that run in the user's project (not as part of the CLI).
+TypeScript scripts compiled to JavaScript and copied to user projects during init.
 
-#### `create-tdd-component.js`
+#### `create-tdd-component.ts` → `templates/scripts/create-tdd-component.js`
 - Creates component file (minimal Vue scaffold)
 - Generates test file using test generator
 - Supports AI and Copilot modes
 
-#### `tdd-feature.js`
+#### `tdd-feature.ts` → `templates/scripts/tdd-feature.js`
 - Interactive CLI wizard (uses inquirer)
 - Collects feature requirements from user
 - Optionally creates GitHub issue
 - Generates component and tests
 
-#### `generate-tests-from-issue.js`
+#### `generate-tests-from-issue.ts` → `templates/scripts/generate-tests-from-issue.js`
 - Used by GitHub Actions
 - Parses GitHub issue for requirements
 - Extracts user story, acceptance criteria, scenarios

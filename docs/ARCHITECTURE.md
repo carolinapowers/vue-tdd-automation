@@ -31,32 +31,37 @@ This package uses a **TypeScript-first development approach** with a **compiled 
 ```
 vue-tdd-automation/
 ├── lib/                          # TypeScript source code
-│   ├── scripts/                  # User-facing CLI scripts (TS)
+│   ├── cli/                      # Self-contained CLI commands
+│   │   ├── init.ts              # 'vue-tdd init' command
+│   │   ├── create.ts            # 'vue-tdd create' command
+│   │   └── feature.ts           # 'vue-tdd feature' command
+│   ├── github-actions/          # Scripts for GitHub Actions workflows
 │   │   ├── create-tdd-component.ts
 │   │   ├── generate-tests-from-issue.ts
 │   │   └── tdd-feature.ts
-│   ├── test-generator/           # Shared test generation logic
-│   │   ├── types.ts
-│   │   ├── index.ts
-│   │   └── validator.ts
-│   ├── init.ts                   # 'vue-tdd init' command
-│   ├── create.ts                 # 'vue-tdd create' command
-│   └── feature.ts                # 'vue-tdd feature' command
+│   └── shared/                  # Shared between CLI and GitHub Actions
+│       ├── test-generator/      # Shared test generation logic
+│       │   ├── index.ts
+│       │   ├── types.ts
+│       │   └── validator.ts
+│       └── json-utils.ts
 ├── bin/                          # CLI entry points
 │   └── cli.ts
-├── scripts/                      # Build scripts
-│   └── post-build.ts            # Copies templates and scripts
+├── scripts/                      # Build and development scripts
+│   ├── post-build.ts            # Copies templates and scripts
+│   └── dev/                     # Development tools (not distributed)
+│       └── create-test-project.sh
 ├── templates/                    # Source templates (not compiled)
 │   ├── docs/                    # Documentation templates
 │   ├── github/                  # GitHub workflow templates
-│   ├── scripts/                 # (Empty - no source .js files)
 │   ├── test/                    # Test helper templates
 │   └── vitest.config.ts
 ├── dist/                         # Build output (gitignored)
 │   ├── bin/                     # Compiled CLI
 │   ├── lib/                     # Compiled library code
-│   │   ├── scripts/            # Compiled user-facing scripts
-│   │   └── test-generator/     # Compiled test generator
+│   │   ├── cli/                # Compiled CLI commands
+│   │   ├── github-actions/     # Compiled GitHub Actions scripts
+│   │   └── shared/             # Compiled shared code
 │   └── templates/               # Ready-to-distribute templates
 │       ├── docs/
 │       ├── github/
@@ -98,14 +103,14 @@ graph TD
 
 1. **TypeScript Compilation** (`tsc`)
    ```bash
-   lib/scripts/create-tdd-component.ts → dist/lib/scripts/create-tdd-component.js
-   lib/scripts/generate-tests-from-issue.ts → dist/lib/scripts/generate-tests-from-issue.js
-   lib/scripts/tdd-feature.ts → dist/lib/scripts/tdd-feature.js
+   lib/github-actions/create-tdd-component.ts → dist/lib/github-actions/create-tdd-component.js
+   lib/github-actions/generate-tests-from-issue.ts → dist/lib/github-actions/generate-tests-from-issue.js
+   lib/github-actions/tdd-feature.ts → dist/lib/github-actions/tdd-feature.js
    ```
 
 2. **Post-Build Script** (`dist/scripts/post-build.js`)
    - Copies entire `templates/` directory → `dist/templates/`
-   - Copies compiled scripts from `dist/lib/scripts/` → `dist/templates/scripts/`
+   - Copies compiled scripts from `dist/lib/github-actions/` → `dist/templates/scripts/`
    - Adds shebang (`#!/usr/bin/env node`) to each script
    - Sets executable permissions (`chmod 755`)
 
@@ -169,7 +174,7 @@ Only the `dist/` directory is published to npm:
 
 ```mermaid
 graph TD
-    A[Edit TypeScript source] --> B[lib/scripts/*.ts]
+    A[Edit TypeScript source] --> B[lib/cli/* or lib/github-actions/*]
     B --> C[npm run build]
     C --> D[TypeScript compiled to dist/]
     D --> E[Post-build copies to dist/templates/]
@@ -229,11 +234,11 @@ Add a new script when you need:
 
 ```mermaid
 graph TD
-    A[Create TypeScript file] --> B[lib/scripts/my-script.ts]
+    A[Create TypeScript file] --> B[lib/github-actions/my-script.ts]
     B --> C[Add proper types and imports]
     C --> D[Update scripts/post-build.ts]
     D --> E[Add 'my-script.js' to filesToCopy array]
-    E --> F[Update lib/init.ts if needed]
+    E --> F[Update lib/cli/init.ts if needed]
     F --> G[Add file mapping if script should be copied]
     G --> H[npm run build]
     H --> I[Verify dist/templates/scripts/my-script.js exists]
@@ -252,7 +257,7 @@ graph TD
 1. **Create the TypeScript source:**
 
    ```typescript
-   // lib/scripts/my-new-script.ts
+   // lib/github-actions/my-new-script.ts
    #!/usr/bin/env node
 
    import fs from 'fs';
@@ -276,7 +281,7 @@ graph TD
 3. **Optionally add to init command:**
 
    ```typescript
-   // lib/init.ts
+   // lib/cli/init.ts
    if (scripts) {
      filesToCopy.push(
        { src: 'scripts/tdd-feature.js', dest: 'scripts/tdd-feature.js' },
@@ -316,8 +321,8 @@ import { something } from '../../dist/lib/something.js';
 
 ✅ **Do** import from shared library modules:
 ```typescript
-// In lib/scripts/, import from sibling directories
-import { generateTestContent } from '../test-generator/index.js';
+// In lib/github-actions/, import from shared code
+import { generateTestContent } from '../shared/test-generator/index.js';
 ```
 
 ✅ **Do** use standard Node.js modules:
