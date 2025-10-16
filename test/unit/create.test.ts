@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { execSync } from 'child_process';
 import path from 'path';
-import { createComponent } from '../../lib/create';
+import { createComponent } from '../../lib/cli/create';
 
 // Mock child_process module
 vi.mock('child_process');

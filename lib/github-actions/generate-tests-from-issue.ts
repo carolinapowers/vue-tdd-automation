@@ -6,9 +6,9 @@
  * Usage: node generate-tests-from-issue.js <componentName> <requirementsJson> [issueNumber] [issueTitle]
  */
 
-import { generateTestContent, validateRequirements } from '../test-generator/index.js';
-import { performFullValidation } from '../test-generator/validator.js';
-import type { TestRequirements } from '../test-generator/types.js';
+import { generateTestContent, validateRequirements } from '../shared/test-generator/index.js';
+import { performFullValidation } from '../shared/test-generator/validator.js';
+import type { TestRequirements } from '../shared/test-generator/types.js';
 
 // Parse command line arguments
 const [,, componentName, requirementsJson, issueNumber, issueTitle] = process.argv;

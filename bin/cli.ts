@@ -7,10 +7,10 @@
 
 import { program } from 'commander';
 import chalk from 'chalk';
-import { initTDD } from '../lib/init.js';
-import { createComponent } from '../lib/create.js';
-import { createFeature } from '../lib/feature.js';
-import { parseJson, isPackageJsonWithVersion } from '../lib/json-utils.js';
+import { initTDD } from '../lib/cli/init.js';
+import { createComponent } from '../lib/cli/create.js';
+import { createFeature } from '../lib/cli/feature.js';
+import { parseJson, isPackageJsonWithVersion } from '../lib/shared/json-utils.js';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { readFileSync } from 'fs';

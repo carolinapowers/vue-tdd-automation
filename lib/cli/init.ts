@@ -7,7 +7,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import chalk from 'chalk';
-import { parseJson, isPackageJson } from './json-utils.js';
+import { parseJson, isPackageJson } from '../shared/json-utils.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -36,8 +36,8 @@ export function initTDD(options: InitOptions = {}): void {
   } = options;
 
   const cwd = process.cwd();
-  // Templates are in dist/templates, up 1 level from dist/lib
-  const templatesDir = path.join(__dirname, '../templates');
+  // Templates are in dist/templates, up 2 levels from dist/lib/cli
+  const templatesDir = path.join(__dirname, '../../templates');
 
   // Verify templates directory exists
   if (!fs.existsSync(templatesDir)) {
