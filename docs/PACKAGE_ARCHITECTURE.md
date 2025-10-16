@@ -384,9 +384,9 @@ graph TB
         CHECK_KEY -->|No key| NULL1[Return null]
         CHECK_KEY -->|Has key| BUILD_PROMPT[buildPrompt]
 
-        BUILD_PROMPT --> ADD_CONTEXT[Add Context:<br/>- Component name<br/>- Test type<br/>- Scenario<br/>- User story<br/>- Props/Events<br/>- Acceptance criteria]
+        BUILD_PROMPT --> ADD_CONTEXT["Add Context:<br/>- Component name<br/>- Test type<br/>- Scenario<br/>- User story<br/>- Props/Events<br/>- Acceptance criteria"]
 
-        ADD_CONTEXT --> ADD_REQS[Add Requirements:<br/>- Testing Library queries<br/>- user-event interactions<br/>- Async/await handling<br/>- Arrange/Act/Assert<br/>- TypeScript types]
+        ADD_CONTEXT --> ADD_REQS["Add Requirements:<br/>- Testing Library queries<br/>- user-event interactions<br/>- Async/await handling<br/>- Arrange/Act/Assert<br/>- TypeScript types"]
 
         ADD_REQS --> DETECT{API Key Type?}
 
@@ -400,11 +400,11 @@ graph TB
         GH_CALL --> RESPONSE{Response OK?}
         OAI_CALL --> RESPONSE
 
-        RESPONSE -->|Error| ERROR[Log error,<br/>Return null]
+        RESPONSE -->|Error| ERROR["Log error,<br/>Return null"]
         RESPONSE -->|Success| EXTRACT[extractTestCode]
 
         EXTRACT --> CLEAN[Clean markdown blocks]
-        CLEAN --> CHECK_WRAPPER{Has it() wrapper?}
+        CLEAN --> CHECK_WRAPPER{"Has it() wrapper?"}
 
         CHECK_WRAPPER -->|Yes| UNWRAP[Extract body only]
         CHECK_WRAPPER -->|No| TRIM[Trim whitespace]
