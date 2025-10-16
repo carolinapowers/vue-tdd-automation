@@ -201,7 +201,7 @@ describe('CLI Integration', () => {
         file.startsWith('dist/bin') || file.startsWith('dist/lib')
       );
       expect(hasDistFiles).toBe(true);
-      expect(packageJson.files).toContain('templates');
+      expect(packageJson.files).toContain('dist/templates');
       expect(packageJson.files).toContain('README.md');
       expect(packageJson.files).toContain('LICENSE');
     });

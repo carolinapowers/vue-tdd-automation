@@ -16,6 +16,7 @@ export interface InitOptions {
   workflows?: boolean;
   docs?: boolean;
   scripts?: boolean;
+  copilot?: boolean;
   force?: boolean;
 }
 
@@ -30,12 +31,13 @@ export function initTDD(options: InitOptions = {}): void {
     workflows = true,
     docs = true,
     scripts = true,
+    copilot = false,
     force = false
   } = options;
 
   const cwd = process.cwd();
-  // Templates are in the package root, up 2 levels from dist/lib
-  const templatesDir = path.join(__dirname, '../../templates');
+  // Templates are in dist/templates, up 1 level from dist/lib
+  const templatesDir = path.join(__dirname, '../templates');
 
   // Verify templates directory exists
   if (!fs.existsSync(templatesDir)) {
@@ -79,7 +81,8 @@ export function initTDD(options: InitOptions = {}): void {
   if (scripts) {
     filesToCopy.push(
       { src: 'scripts/tdd-feature.js', dest: 'scripts/tdd-feature.js' },
-      { src: 'scripts/create-tdd-component.js', dest: 'scripts/create-tdd-component.js' }
+      { src: 'scripts/create-tdd-component.js', dest: 'scripts/create-tdd-component.js' },
+      { src: 'scripts/generate-tests-from-issue.js', dest: 'scripts/generate-tests-from-issue.js' }
     );
   }
 
@@ -89,6 +92,13 @@ export function initTDD(options: InitOptions = {}): void {
       { src: 'github/workflows/auto-tdd-setup.yml', dest: '.github/workflows/auto-tdd-setup.yml' },
       { src: 'github/workflows/tdd.yml', dest: '.github/workflows/tdd.yml' },
       { src: 'github/ISSUE_TEMPLATE/feature_request.md', dest: '.github/ISSUE_TEMPLATE/feature_request.md' }
+    );
+  }
+
+  // Optional Copilot instructions
+  if (copilot) {
+    filesToCopy.push(
+      { src: 'github/copilot-instructions.md', dest: '.github/copilot-instructions.md' }
     );
   }
 

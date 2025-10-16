@@ -1,14 +1,20 @@
 {
-  "name": "@vue-tdd/automation",
-  "version": "0.1.0",
+  "name": "@carolinappowers/vue-tdd-automation",
+  "version": "0.1.1",
   "description": "Automated TDD workflow for Vue.js applications with Vitest and Testing Library",
   "main": "dist/lib/init.js",
   "type": "module",
+  "exports": {
+    ".": "./dist/lib/init.js",
+    "./test-generator/index.js": "./dist/lib/test-generator/index.js",
+    "./test-generator/validator.js": "./dist/lib/test-generator/validator.js",
+    "./test-generator/types.js": "./dist/lib/test-generator/types.js"
+  },
   "bin": {
     "vue-tdd": "./dist/bin/cli.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && node dist/scripts/post-build.js",
     "prepublishOnly": "npm run build",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -43,7 +49,7 @@
     "dist/bin/**/*.d.ts",
     "dist/lib/**/*.js",
     "dist/lib/**/*.d.ts",
-    "templates",
+    "dist/templates",
     "README.md",
     "LICENSE"
   ],
@@ -51,8 +57,7 @@
     "node": ">=18.0.0"
   },
   "publishConfig": {
-    "access": "public",
-    "provenance": true
+    "access": "public"
   },
   "peerDependencies": {
     "vitest": "^2.0.0 || ^3.0.0",

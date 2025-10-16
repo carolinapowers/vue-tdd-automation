@@ -42,7 +42,8 @@ const testTemplate = `/**
  * TODO: Update this with actual requirements from GitHub issue
  */
 
-import { describe, it, expect, beforeEach, vi } from 'vitest'
+import { describe, it, expect, beforeEach } from 'vitest'
+// import { vi } from 'vitest' // Uncomment if you need to mock functions
 import { mount, VueWrapper } from '@vue/test-utils'
 import ${componentName} from './${componentName}.vue'
 
@@ -115,19 +116,19 @@ const componentTemplate = `<template>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+// Uncomment imports as needed
+// import { ref, computed, watch } from 'vue'
 
-// Props
-interface Props {
-  // TODO: Define props based on test requirements
-}
+// Props - uncomment and define when needed
+// interface Props {
+//   // TODO: Define props based on test requirements
+// }
+// const props = defineProps<Props>()
 
-const props = defineProps<Props>()
-
-// Emits
-const emit = defineEmits<{
-  // TODO: Define events based on test requirements
-}>()
+// Emits - uncomment and define when needed
+// const emit = defineEmits<{
+//   // TODO: Define events based on test requirements
+// }>()
 
 // State
 // TODO: Add reactive state as needed
@@ -179,6 +180,7 @@ try {
   console.log('\n🚀 Happy TDD coding!');
 
 } catch (error) {
-  console.error('❌ Error creating files:', error.message);
+  const err = error as Error;
+  console.error('❌ Error creating files:', err.message);
   process.exit(1);
 }

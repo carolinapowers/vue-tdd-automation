@@ -10,11 +10,8 @@ import readline from 'readline';
 import { execSync } from 'child_process';
 import fs from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
-
-// Get __dirname equivalent in ES modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+import { generateTestContent } from '../test-generator/index.js';
+import type { TestRequirements } from '../test-generator/types.js';
 
 const rl = readline.createInterface({
   input: process.stdin,
@@ -32,13 +29,13 @@ const colors = {
   red: '\x1b[31m'
 };
 
-function prompt(question) {
+function prompt(question: string): Promise<string> {
   return new Promise((resolve) => {
     rl.question(question, resolve);
   });
 }
 
-async function main() {
+async function main(): Promise<void> {
   console.log(`${colors.bright}${colors.cyan}🤖 TDD Feature Generator${colors.reset}\n`);
   console.log('This tool will create a GitHub issue and automatically set up TDD for your feature.\n');
 
@@ -52,8 +49,8 @@ async function main() {
   console.log(`\n${colors.cyan}📝 Acceptance Criteria${colors.reset}`);
   console.log('Enter acceptance criteria (empty line to finish):');
 
-  const acceptanceCriteria = [];
-  let criterion;
+  const acceptanceCriteria: string[] = [];
+  let criterion: string;
   while ((criterion = await prompt(`  - `)) !== '') {
     acceptanceCriteria.push(criterion);
   }
@@ -65,20 +62,20 @@ async function main() {
 
   console.log(`\n${colors.cyan}✅ Test Scenarios${colors.reset}`);
   console.log('Happy path scenarios (empty line to finish):');
-  const happyPath = [];
-  let scenario;
+  const happyPath: string[] = [];
+  let scenario: string;
   while ((scenario = await prompt(`  - `)) !== '') {
     happyPath.push(scenario);
   }
 
   console.log('Edge cases (empty line to finish):');
-  const edgeCases = [];
+  const edgeCases: string[] = [];
   while ((scenario = await prompt(`  - `)) !== '') {
     edgeCases.push(scenario);
   }
 
   console.log('Error cases (empty line to finish):');
-  const errorCases = [];
+  const errorCases: string[] = [];
   while ((scenario = await prompt(`  - `)) !== '') {
     errorCases.push(scenario);
   }
@@ -160,7 +157,7 @@ ${errorCases.map(s => `- [ ] ${s}`).join('\n')}
       console.log('  4. Open a Pull Request');
       console.log('\nCheck your GitHub repository for updates!');
     } catch (error) {
-      console.error(`${colors.red}Error creating issue:${colors.reset}`, error.message);
+      console.error(`${colors.red}Error creating issue:${colors.reset}`, (error as Error).message);
     }
   } else {
     // Option 2: Save to file and provide instructions
@@ -205,7 +202,7 @@ ${issueBody}`);
 
     // Generate detailed tests based on requirements
     const testFile = path.join('src', 'components', `${componentName}.test.ts`);
-    const testContent = generateTestContent(componentName, {
+    const requirements: TestRequirements = {
       userStory: `As a ${userType}, I want ${feature} so that ${benefit}`,
       acceptanceCriteria,
       happyPath,
@@ -213,7 +210,9 @@ ${issueBody}`);
       errorCases,
       props,
       events
-    });
+    };
+
+    const testContent = generateTestContent(componentName, requirements);
 
     fs.writeFileSync(testFile, testContent);
 
@@ -225,88 +224,6 @@ ${issueBody}`);
   }
 
   rl.close();
-}
-
-function generateTestContent(componentName, requirements) {
-  return `/**
- * ${componentName} Component Tests
- * Auto-generated from TDD Feature CLI
- *
- * User Story: ${requirements.userStory}
- *
- * This test file follows TDD approach - all tests should fail initially (Red phase)
- */
-
-import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
-import { render, screen, waitFor } from '@/test/helpers/testing-library'
-import { mount } from '@vue/test-utils'
-import ${componentName} from './${componentName}.vue'
-
-describe('${componentName} Component', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
-
-  describe('Acceptance Criteria', () => {
-${requirements.acceptanceCriteria.map(criteria => `    it('should ${criteria.toLowerCase()}', async () => {
-      // Acceptance Criteria: ${criteria}
-      const { user } = render(${componentName});
-
-      // TODO: Implement test
-      expect(true).toBe(false); // Red phase
-    });`).join('\n\n')}
-  });
-
-  describe('Happy Path', () => {
-${requirements.happyPath.map(scenario => `    it('should ${scenario.toLowerCase()}', async () => {
-      // Happy Path: ${scenario}
-      const { user } = render(${componentName});
-
-      // TODO: Implement test
-      expect(true).toBe(false); // Red phase
-    });`).join('\n\n')}
-  });
-
-  describe('Edge Cases', () => {
-${requirements.edgeCases.map(edge => `    it('should handle ${edge.toLowerCase()}', async () => {
-      // Edge Case: ${edge}
-      const { user } = render(${componentName});
-
-      // TODO: Implement test
-      expect(true).toBe(false); // Red phase
-    });`).join('\n\n')}
-  });
-
-  describe('Error Handling', () => {
-${requirements.errorCases.map(error => `    it('should handle ${error.toLowerCase()}', async () => {
-      // Error Case: ${error}
-      const { user } = render(${componentName});
-
-      // TODO: Implement test
-      expect(true).toBe(false); // Red phase
-    });`).join('\n\n')}
-  });
-
-  describe('Accessibility', () => {
-    it('should be accessible to screen readers', () => {
-      render(${componentName});
-
-      // TODO: Add accessibility checks
-      expect(true).toBe(false); // Red phase
-    });
-
-    it('should be keyboard navigable', async () => {
-      const { user } = render(${componentName});
-
-      // TODO: Test keyboard navigation
-      expect(true).toBe(false); // Red phase
-    });
-  });
-});`;
 }
 
 main().catch(console.error);

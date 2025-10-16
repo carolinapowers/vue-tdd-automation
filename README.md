@@ -12,6 +12,7 @@ Automate your Vue.js TDD workflow with GitHub issue-driven development, automati
 - ♿ **Accessibility First** - Built-in a11y testing utilities
 - 📊 **Coverage Enforcement** - Automatic 80% coverage thresholds
 - 🔄 **GitHub Actions** - Automated TDD setup workflow
+- 🤖 **GitHub Copilot Support** - Pre-configured instructions for AI-assisted test writing
 - 📚 **Comprehensive Docs** - TDD guides and best practices included
 
 ## 🚀 Quick Start
@@ -35,6 +36,8 @@ This will:
 - Add issue templates
 - Create comprehensive documentation
 
+**Tip:** Add `--copilot` flag to include GitHub Copilot instructions for AI-assisted test writing
+
 ### Create Your First Component (TDD Style)
 
 ```bash
@@ -46,6 +49,8 @@ npx vue-tdd create MyComponent "Component description"
 ```
 
 ## 📖 Usage
+
+> 💡 **For complete CLI documentation, see [CLI.md](./CLI.md)**
 
 ### CLI Commands
 
@@ -60,12 +65,16 @@ Options:
 - `--no-workflows` - Skip GitHub Actions workflows
 - `--no-docs` - Skip documentation files
 - `--no-scripts` - Skip component creation scripts
+- `--copilot` - Add GitHub Copilot instructions file
 - `--force` - Overwrite existing files
 
 Examples:
 ```bash
 # Full installation (default)
 npx vue-tdd init
+
+# With GitHub Copilot support
+npx vue-tdd init --copilot
 
 # Minimal (core test files only)
 npx vue-tdd init --no-workflows --no-docs --no-scripts
@@ -151,9 +160,12 @@ gh pr create
 
 ## 📁 What Gets Installed
 
+### Files & Directories
+
 ```
 your-project/
 ├── .github/
+│   ├── copilot-instructions.md  ← Guides GitHub Copilot
 │   ├── workflows/
 │   │   └── auto-tdd-setup.yml
 │   └── ISSUE_TEMPLATE/
@@ -173,6 +185,33 @@ your-project/
 ├── TDD_WORKFLOW.md
 └── TESTING_COMPARISON.md
 ```
+
+### NPM Scripts
+
+The `init` command automatically adds these scripts to your `package.json`:
+
+```json
+{
+  "scripts": {
+    "test": "vitest",
+    "test:watch": "vitest --watch",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage",
+    "tdd": "vitest --watch --reporter=verbose",
+    "create:component": "node scripts/create-tdd-component.js",
+    "tdd:feature": "node scripts/tdd-feature.js"
+  }
+}
+```
+
+**Usage:**
+- `npm test` - Run all tests once
+- `npm run test:watch` - Run tests in watch mode
+- `npm run test:ui` - Open Vitest UI for interactive testing
+- `npm run test:coverage` - Generate coverage report
+- `npm run tdd` - TDD mode with verbose output (recommended for development)
+- `npm run create:component` - Create a component with tests using CLI
+- `npm run tdd:feature` - Interactive feature creation wizard
 
 ## 🧪 Testing Utilities
 
@@ -218,6 +257,51 @@ expect(a11y.isAccessible(element)).toBe(true)
 expect(a11y.getAccessibleName(element)).toBe('Submit Form')
 ```
 
+## 🤖 GitHub Copilot Integration
+
+This package includes pre-configured GitHub Copilot instructions to help you write better tests faster.
+
+### What's Included
+
+When you run `vue-tdd init --copilot`, a `.github/copilot-instructions.md` file is installed with:
+
+- ✅ Vue + Vitest testing best practices
+- ✅ Testing Library query preferences (accessibility-first)
+- ✅ TDD workflow guidelines (Red → Green → Refactor)
+- ✅ Accessibility testing patterns
+- ✅ Common test patterns and examples
+- ✅ What to test (and what NOT to test)
+
+### How It Works
+
+Once installed, GitHub Copilot automatically uses these instructions when you:
+- Write new test files
+- Add test cases
+- Update existing tests
+
+**Example:** When you type `it('should`, Copilot will suggest tests that follow Testing Library best practices, use accessible queries, and include proper async handling.
+
+### Benefits
+
+- **Faster Development** - Get intelligent test suggestions based on your requirements
+- **Better Quality** - Tests follow best practices automatically
+- **Consistency** - All tests follow the same patterns across your team
+- **Learning Tool** - Great for teams learning TDD or Testing Library
+
+### Requirements
+
+- GitHub Copilot subscription (individual or business)
+- VS Code with GitHub Copilot extension (or other Copilot-enabled IDE)
+
+### Customization
+
+Edit `.github/copilot-instructions.md` in your project to:
+- Add project-specific testing patterns
+- Include custom component examples
+- Adjust guidelines for your team's needs
+
+**Note:** Changes only affect your project, not the package defaults.
+
 ## 🎨 Customization
 
 ### Vitest Configuration
@@ -247,13 +331,62 @@ Edit `.github/workflows/auto-tdd-setup.yml` to customize:
 - Comment format
 - Trigger conditions
 
-## 📚 Documentation
+## 📚 Documentation & Resources
 
-After initialization, you'll have:
+### Quick Reference
 
-- **TDD_WORKFLOW.md** - Complete TDD workflow guide
-- **TESTING_COMPARISON.md** - Vue Test Utils vs Testing Library
-- **VUE_TESTING_ALIGNMENT.md** - Vue.js testing standards compliance
+- **[CLI.md](./docs/CLI.md)** - Complete CLI command reference
+  - All commands with examples
+  - NPM scripts documentation
+  - Workflows and troubleshooting
+
+### User Guides
+
+- **[TDD_WORKFLOW.md](./templates/docs/TDD_WORKFLOW.md)** - Complete TDD workflow guide
+  - RED → GREEN → REFACTOR process
+  - GitHub Copilot integration
+  - Best practices and examples
+
+- **[TESTING_COMPARISON.md](./templates/docs/TESTING_COMPARISON.md)** - Vue Test Utils vs Testing Library
+  - When to use each approach
+  - Code examples
+  - Migration guide
+
+- **[VUE_TESTING_ALIGNMENT.md](./templates/docs/VUE_TESTING_ALIGNMENT.md)** - Vue.js testing standards compliance
+  - Official Vue.js testing recommendations
+  - Framework alignment details
+
+### Developer Resources
+
+- **[ARCHITECTURE.md](./docs/ARCHITECTURE.md)** - Architecture documentation
+  - TypeScript → JavaScript build process
+  - Directory structure explained
+  - How scripts are compiled and distributed
+  - Mermaid flow diagrams
+  - Adding new scripts guide
+
+- **[TESTING_QUICK_START.md](./docs/TESTING_QUICK_START.md)** - Quick testing reference
+  - Running tests
+  - Local package testing
+  - Common commands
+
+- **[TEST_SETUP.md](./docs/TEST_SETUP.md)** - Comprehensive testing guide
+  - Detailed setup instructions
+  - Testing strategies
+  - Advanced configurations
+
+- **[CONTRIBUTING.md](./CONTRIBUTING.md)** - Contribution guide
+  - Development workflow
+  - Code standards
+  - Pull request process
+
+### Installation Guides
+
+After running `vue-tdd init`, your project will include:
+
+- **TDD_WORKFLOW.md** - TDD workflow guide (copied to your project)
+- **TESTING_COMPARISON.md** - Testing approaches (copied to your project)
+- **VUE_TESTING_ALIGNMENT.md** - Vue standards (copied to your project)
 
 ## 🧪 Testing & Development
 
