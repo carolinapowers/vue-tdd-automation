@@ -335,7 +335,7 @@ Edit `.github/workflows/auto-tdd-setup.yml` to customize:
 
 ### Quick Reference
 
-- **[CLI.md](./CLI.md)** - Complete CLI command reference
+- **[CLI.md](./docs/CLI.md)** - Complete CLI command reference
   - All commands with examples
   - NPM scripts documentation
   - Workflows and troubleshooting
@@ -358,19 +358,19 @@ Edit `.github/workflows/auto-tdd-setup.yml` to customize:
 
 ### Developer Resources
 
-- **[ARCHITECTURE.md](./ARCHITECTURE.md)** - Architecture documentation
+- **[ARCHITECTURE.md](./docs/ARCHITECTURE.md)** - Architecture documentation
   - TypeScript → JavaScript build process
   - Directory structure explained
   - How scripts are compiled and distributed
   - Mermaid flow diagrams
   - Adding new scripts guide
 
-- **[TESTING_QUICK_START.md](./TESTING_QUICK_START.md)** - Quick testing reference
+- **[TESTING_QUICK_START.md](./docs/TESTING_QUICK_START.md)** - Quick testing reference
   - Running tests
   - Local package testing
   - Common commands
 
-- **[TEST_SETUP.md](./TEST_SETUP.md)** - Comprehensive testing guide
+- **[TEST_SETUP.md](./docs/TEST_SETUP.md)** - Comprehensive testing guide
   - Detailed setup instructions
   - Testing strategies
   - Advanced configurations
