@@ -1,4 +1,4 @@
-# @vue-tdd/automation
+# @carolinappowers/vue-tdd-automation
 
 > Automated Test-Driven Development workflow for Vue.js applications
 
@@ -20,7 +20,7 @@ Automate your Vue.js TDD workflow with GitHub issue-driven development, automati
 ### Installation
 
 ```bash
-npm install -D @vue-tdd/automation
+npm install -D @carolinappowers/vue-tdd-automation
 ```
 
 ### Initialize TDD in Your Project
@@ -424,7 +424,7 @@ Before publishing, test the package with a real Vue project:
 # Or manually with npm link
 npm run build && npm link
 cd /path/to/your/vue-project
-npm link @vue-tdd/automation
+npm link @carolinappowers/vue-tdd-automation
 npx vue-tdd init
 ```
 
@@ -441,7 +441,7 @@ MIT © Carolina Powers
 ## 🔗 Links
 
 - [GitHub Repository](https://github.com/carolinapowers/vue-tdd-automation)
-- [npm Package](https://www.npmjs.com/package/@vue-tdd/automation)
+- [npm Package](https://www.npmjs.com/package/@carolinappowers/vue-tdd-automation)
 - [Issue Tracker](https://github.com/carolinapowers/vue-tdd-automation/issues)
 
 ## 🙏 Credits

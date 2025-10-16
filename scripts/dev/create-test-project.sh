@@ -56,7 +56,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # Install the local package
-echo -e "\n${YELLOW}📦 Installing local @vue-tdd/automation package...${NC}"
+echo -e "\n${YELLOW}📦 Installing local @carolinappowers/vue-tdd-automation package...${NC}"
 TARBALL_PATH="../../vue-tdd-automation/$TARBALL"
 npm install -D "$TARBALL_PATH"
 

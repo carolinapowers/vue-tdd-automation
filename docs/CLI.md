@@ -17,7 +17,7 @@ Complete reference for all `vue-tdd` command-line interface commands.
 ## Installation
 
 ```bash
-npm install -D @vue-tdd/automation
+npm install -D @carolinappowers/vue-tdd-automation
 ```
 
 ## Commands Overview
@@ -590,7 +590,7 @@ git commit -m "feat: add QuickButton component"
 
 ```bash
 # Install package
-npm install -D @vue-tdd/automation
+npm install -D @carolinappowers/vue-tdd-automation
 
 # Initialize with full setup
 npx vue-tdd init
@@ -713,10 +713,10 @@ jobs:
 
 ```bash
 # If npx vue-tdd not found:
-npm install -D @vue-tdd/automation
+npm install -D @carolinappowers/vue-tdd-automation
 
 # Or use explicit path:
-npx @vue-tdd/automation init
+npx @carolinappowers/vue-tdd-automation init
 ```
 
 ### Tests Not Running
@@ -779,4 +779,4 @@ open coverage/index.html
 
 - **Issues**: [GitHub Issues](https://github.com/carolinapowers/vue-tdd-automation/issues)
 - **Documentation**: [GitHub Repository](https://github.com/carolinapowers/vue-tdd-automation)
-- **npm**: [@vue-tdd/automation](https://www.npmjs.com/package/@vue-tdd/automation)
+- **npm**: [@carolinappowers/vue-tdd-automation](https://www.npmjs.com/package/@carolinappowers/vue-tdd-automation)

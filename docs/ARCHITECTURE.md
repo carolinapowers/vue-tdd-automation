@@ -126,8 +126,8 @@ graph TD
 ```mermaid
 graph LR
     A[npm publish] --> B[Package published to npm]
-    B --> C["User runs: npm install @vue-tdd/automation"]
-    C --> D["node_modules/@vue-tdd/automation/"]
+    B --> C["User runs: npm install @carolinappowers/vue-tdd-automation"]
+    C --> D["node_modules/@carolinappowers/vue-tdd-automation/"]
 
     D --> E[dist/bin/cli.js]
     D --> F[dist/lib/]

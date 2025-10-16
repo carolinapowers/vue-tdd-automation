@@ -42,7 +42,7 @@ vitest.config.ts
 - User should manually merge TDD settings
 
 **To merge manually:**
-1. See template at `node_modules/@vue-tdd/automation/templates/vitest.config.ts`
+1. See template at `node_modules/@carolinappowers/vue-tdd-automation/templates/vitest.config.ts`
 2. Copy relevant sections (test helpers, coverage thresholds, etc.)
 3. Integrate into your existing config
 

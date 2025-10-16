@@ -257,7 +257,7 @@ npm install
 **Step 3: Link the package to your test project**
 ```bash
 # In your test Vue project directory
-npm link @vue-tdd/automation
+npm link @carolinappowers/vue-tdd-automation
 ```
 
 **Step 4: Test the CLI commands**
@@ -298,7 +298,7 @@ npx vue-tdd init --force
 **Step 7: Cleanup when done**
 ```bash
 # In your test Vue project
-npm unlink @vue-tdd/automation
+npm unlink @carolinappowers/vue-tdd-automation
 npm install
 
 # In vue-tdd-automation directory
@@ -344,7 +344,7 @@ npm run build
 npm pack
 
 # In test project, reinstall
-npm uninstall @vue-tdd/automation
+npm uninstall @carolinappowers/vue-tdd-automation
 npm install -D /path/to/vue-tdd-automation/vue-tdd-automation-0.1.0.tgz
 ```
 
@@ -354,7 +354,7 @@ npm install -D /path/to/vue-tdd-automation/vue-tdd-automation-0.1.0.tgz
 rm *.tgz
 
 # In test project
-npm uninstall @vue-tdd/automation
+npm uninstall @carolinappowers/vue-tdd-automation
 ```
 
 ### Method 3: Using a Test Script
@@ -480,7 +480,7 @@ After testing locally, verify:
 
 ### Troubleshooting Local Testing
 
-**Issue: "Cannot find module '@vue-tdd/automation'"**
+**Issue: "Cannot find module '@carolinappowers/vue-tdd-automation'"**
 ```bash
 # Solution: Rebuild and relink
 cd vue-tdd-automation
@@ -488,7 +488,7 @@ npm run build
 npm link
 
 cd ../test-project
-npm link @vue-tdd/automation
+npm link @carolinappowers/vue-tdd-automation
 ```
 
 **Issue: Changes not reflected after rebuild**

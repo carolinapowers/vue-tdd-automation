@@ -23,7 +23,8 @@
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
-    "dev:create-test-project": "scripts/dev/create-test-project.sh"
+    "dev:create-test-project": "scripts/dev/create-test-project.sh",
+    "dev:install": "scripts/dev/install-from-branch.sh"
   },
   "keywords": [
     "vue",
@@ -61,6 +62,10 @@
     "access": "public"
   },
   "peerDependencies": {
+    "@testing-library/jest-dom": "^6.0.0",
+    "@testing-library/user-event": "^14.0.0",
+    "@testing-library/vue": "^8.0.0",
+    "@vue/test-utils": "^2.4.0",
     "vitest": "^2.0.0 || ^3.0.0",
     "vue": "^3.4.0"
   },
