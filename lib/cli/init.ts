@@ -15,7 +15,7 @@ const __dirname = path.dirname(__filename);
 export interface InitOptions {
   workflows?: boolean;
   docs?: boolean;
-  scripts?: boolean;
+  scripts?: boolean | 'ts' | 'js';
   copilot?: boolean;
   force?: boolean;
 }
@@ -30,7 +30,7 @@ export function initTDD(options: InitOptions = {}): void {
   const {
     workflows = true,
     docs = true,
-    scripts = true,
+    scripts = false, // Changed default to false for hybrid approach
     copilot = false,
     force = false
   } = options;
@@ -38,6 +38,8 @@ export function initTDD(options: InitOptions = {}): void {
   const cwd = process.cwd();
   // Templates are in dist/templates, up 2 levels from dist/lib/cli
   const templatesDir = path.join(__dirname, '../../templates');
+  // Source TypeScript files are in dist/lib/github-actions
+  const sourceScriptsDir = path.join(__dirname, '../github-actions');
 
   // Verify templates directory exists
   if (!fs.existsSync(templatesDir)) {
@@ -77,8 +79,10 @@ export function initTDD(options: InitOptions = {}): void {
     filesToCopy.push({ src: 'vitest.config.ts', dest: 'vitest.config.ts', required: false });
   }
 
-  // Optional scripts
-  if (scripts) {
+  // Optional scripts - can be 'ts', 'js', true (defaults to 'js'), or false
+  const scriptFormat = scripts ? (scripts === true ? 'js' : scripts) : false;
+  if (scriptFormat === 'js') {
+    // Copy compiled JavaScript files from templates
     filesToCopy.push(
       { src: 'scripts/tdd-feature.js', dest: 'scripts/tdd-feature.js' },
       { src: 'scripts/create-tdd-component.js', dest: 'scripts/create-tdd-component.js' },
@@ -141,6 +145,53 @@ export function initTDD(options: InitOptions = {}): void {
     fs.copyFileSync(srcPath, destPath);
     console.log(chalk.green(`✅ Copied: ${file.dest}`));
     copiedCount++;
+  }
+
+  // Copy TypeScript scripts if requested (after regular copy so counters are initialized)
+  if (scriptFormat === 'ts') {
+    const tsScripts = [
+      { src: 'tdd-feature.ts', dest: 'scripts/tdd-feature.ts' },
+      { src: 'create-tdd-component.ts', dest: 'scripts/create-tdd-component.ts' },
+      { src: 'generate-tests-from-issue.ts', dest: 'scripts/generate-tests-from-issue.ts' }
+    ];
+
+    for (const script of tsScripts) {
+      const srcPath = path.join(sourceScriptsDir, script.src);
+      if (fs.existsSync(srcPath)) {
+        // Read the TS file and replace package imports with relative paths
+        let content = fs.readFileSync(srcPath, 'utf-8');
+
+        // Replace package imports with relative imports
+        content = content.replace(
+          /from ['"]@carolinappowers\/vue-tdd-automation\/shared\/test-generator['"]/g,
+          "from '../node_modules/@carolinappowers/vue-tdd-automation/dist/lib/shared/test-generator/index.js'"
+        );
+        content = content.replace(
+          /from ['"]@carolinappowers\/vue-tdd-automation\/shared\/test-generator\/validator['"]/g,
+          "from '../node_modules/@carolinappowers/vue-tdd-automation/dist/lib/shared/test-generator/validator.js'"
+        );
+        content = content.replace(
+          /from ['"]@carolinappowers\/vue-tdd-automation\/shared\/test-generator\/types['"]/g,
+          "from '../node_modules/@carolinappowers/vue-tdd-automation/dist/lib/shared/test-generator/types.js'"
+        );
+
+        // Write to destination
+        const destPath = path.join(cwd, script.dest);
+        const destDir = path.dirname(destPath);
+        if (!fs.existsSync(destDir)) {
+          fs.mkdirSync(destDir, { recursive: true });
+        }
+
+        if (fs.existsSync(destPath) && !force) {
+          console.log(chalk.gray(`⏭️  Skipped (exists): ${script.dest}`));
+          skippedCount++;
+        } else {
+          fs.writeFileSync(destPath, content);
+          console.log(chalk.green(`✅ Copied (TS): ${script.dest}`));
+          copiedCount++;
+        }
+      }
+    }
   }
 
   console.log(chalk.blue(`\n📊 Summary: ${copiedCount} files copied, ${skippedCount} skipped\n`));

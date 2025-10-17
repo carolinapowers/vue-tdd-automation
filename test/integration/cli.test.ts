@@ -121,9 +121,9 @@ describe('CLI Integration', () => {
     it('should call createComponent with name and description', async () => {
       const { createComponent } = await import('../../lib/cli/create');
 
-      createComponent('MyButton', 'A reusable button');
+      createComponent('MyButton', { description: 'A reusable button' });
 
-      expect(createComponent).toHaveBeenCalledWith('MyButton', 'A reusable button');
+      expect(createComponent).toHaveBeenCalledWith('MyButton', { description: 'A reusable button' });
     });
   });
 

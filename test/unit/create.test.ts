@@ -1,17 +1,31 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { execSync } from 'child_process';
+import fs from 'fs';
 import path from 'path';
 import { createComponent } from '../../lib/cli/create';
 
-// Mock child_process module
-vi.mock('child_process');
+// Mock fs module
+vi.mock('fs');
+vi.mock('chalk', () => ({
+  default: {
+    green: (str: string) => str,
+    blue: (str: string) => str,
+    white: (str: string) => str
+  }
+}));
 
 describe('createComponent', () => {
   const mockCwd = '/mock/project';
+  const componentsDir = path.join(mockCwd, 'src', 'components');
 
   beforeEach(() => {
     vi.clearAllMocks();
     vi.spyOn(process, 'cwd').mockReturnValue(mockCwd);
+    vi.spyOn(console, 'log').mockImplementation(() => {});
+
+    // Mock fs functions
+    vi.mocked(fs.existsSync).mockReturnValue(false); // No files exist by default
+    vi.mocked(fs.mkdirSync).mockReturnValue(undefined);
+    vi.mocked(fs.writeFileSync).mockReturnValue(undefined);
   });
 
   afterEach(() => {
@@ -19,176 +33,164 @@ describe('createComponent', () => {
   });
 
   describe('successful creation', () => {
-    it('should execute create script with component name', async () => {
-      const execSyncSpy = vi.mocked(execSync).mockImplementation(() => Buffer.from(''));
-
+    it('should create test and component files', () => {
       createComponent('MyButton');
 
-      expect(execSyncSpy).toHaveBeenCalledWith(
-        expect.stringContaining('create-tdd-component.js'),
-        expect.objectContaining({
-          cwd: mockCwd,
-          stdio: 'inherit'
-        })
+      expect(fs.writeFileSync).toHaveBeenCalledTimes(2);
+      expect(fs.writeFileSync).toHaveBeenCalledWith(
+        path.join(componentsDir, 'MyButton.test.ts'),
+        expect.stringContaining('describe(\'MyButton\'')
+      );
+      expect(fs.writeFileSync).toHaveBeenCalledWith(
+        path.join(componentsDir, 'MyButton.vue'),
+        expect.stringContaining('<template>')
       );
     });
 
-    it('should pass component name to script', async () => {
-      const execSyncSpy = vi.mocked(execSync).mockImplementation(() => Buffer.from(''));
+    it('should use provided description in test file', () => {
+      createComponent('MyButton', { description: 'A reusable button component' });
 
-      createComponent('UserProfile');
-
-      const call = execSyncSpy.mock.calls[0]?.[0];
-      expect(call).toContain('UserProfile');
+      const testFileCall = vi.mocked(fs.writeFileSync).mock.calls.find(
+        call => call[0].toString().endsWith('.test.ts')
+      );
+      expect(testFileCall?.[1]).toContain('A reusable button component');
     });
 
-    it('should use provided description', async () => {
-      const execSyncSpy = vi.mocked(execSync).mockImplementation(() => Buffer.from(''));
+    it('should use default description when none provided', () => {
+      createComponent('MyButton');
 
-      createComponent('MyButton', 'A reusable button component');
-
-      const call = execSyncSpy.mock.calls[0]?.[0];
-      expect(call).toContain('A reusable button component');
+      const testFileCall = vi.mocked(fs.writeFileSync).mock.calls.find(
+        call => call[0].toString().endsWith('.test.ts')
+      );
+      expect(testFileCall?.[1]).toContain('Component: MyButton');
     });
 
-    it('should use default description when none provided', async () => {
-      const execSyncSpy = vi.mocked(execSync).mockImplementation(() => Buffer.from(''));
+    it('should create components directory if it does not exist', () => {
+      createComponent('MyButton');
+
+      expect(fs.mkdirSync).toHaveBeenCalledWith(
+        componentsDir,
+        { recursive: true }
+      );
+    });
+
+    it('should not create directory if it already exists', () => {
+      vi.mocked(fs.existsSync).mockImplementation((path) => {
+        return path === componentsDir;
+      });
 
       createComponent('MyButton');
 
-      const call = execSyncSpy.mock.calls[0]?.[0];
-      expect(call).toContain('Component: MyButton');
-    });
-
-    it('should use empty string as default description', async () => {
-      const execSyncSpy = vi.mocked(execSync).mockImplementation(() => Buffer.from(''));
-
-      createComponent('MyButton', '');
-
-      const call = execSyncSpy.mock.calls[0]?.[0];
-      expect(call).toContain('Component: MyButton');
+      expect(fs.mkdirSync).not.toHaveBeenCalled();
     });
   });
 
   describe('error handling', () => {
-    it('should throw error if script execution fails', () => {
-      vi.mocked(execSync).mockImplementation(() => {
-        throw new Error('Script not found');
+    it('should throw error if test file already exists', () => {
+      vi.mocked(fs.existsSync).mockImplementation((path) => {
+        return path.toString().endsWith('.test.ts');
       });
 
-      expect(() => createComponent('MyButton')).toThrow('Script not found');
+      expect(() => createComponent('MyButton')).toThrow('Test file already exists');
     });
 
-    it('should throw error if scripts directory does not exist', () => {
-      vi.mocked(execSync).mockImplementation(() => {
-        throw new Error('ENOENT: no such file or directory');
+    it('should throw error if component file already exists', () => {
+      vi.mocked(fs.existsSync).mockImplementation((path) => {
+        return path.toString().endsWith('.vue');
       });
 
-      expect(() => createComponent('MyButton')).toThrow(
-        "Creation script not found at /mock/project/scripts/create-tdd-component.js. Make sure you've run 'vue-tdd init' first."
+      expect(() => createComponent('MyButton')).toThrow('Component file already exists');
+    });
+
+    it('should throw error for invalid component name', () => {
+      expect(() => createComponent('myButton')).toThrow(
+        'Component name must start with a capital letter'
       );
     });
 
-    it('should handle script path with spaces correctly', async () => {
-      const mockCwdWithSpaces = '/mock/project with spaces';
-      vi.spyOn(process, 'cwd').mockReturnValue(mockCwdWithSpaces);
-      const execSyncSpy = vi.mocked(execSync).mockImplementation(() => Buffer.from(''));
-
-      createComponent('MyButton');
-
-      const call = execSyncSpy.mock.calls[0]?.[0];
-      // Check that the path is properly quoted
-      expect(call).toMatch(/node ".*create-tdd-component\.js"/);
-    });
-  });
-
-  describe('path handling', () => {
-    it('should construct correct script path', async () => {
-      const execSyncSpy = vi.mocked(execSync).mockImplementation(() => Buffer.from(''));
-
-      createComponent('MyButton');
-
-      const call = execSyncSpy.mock.calls[0]?.[0];
-      expect(call).toContain(path.join('scripts', 'create-tdd-component.js'));
-    });
-
-    it('should execute script in current working directory', async () => {
-      const execSyncSpy = vi.mocked(execSync).mockImplementation(() => Buffer.from(''));
-
-      createComponent('MyButton');
-
-      expect(execSyncSpy).toHaveBeenCalledWith(
-        expect.any(String),
-        expect.objectContaining({ cwd: mockCwd })
+    it('should throw error for component name with special characters', () => {
+      expect(() => createComponent('My-Button')).toThrow(
+        'Component name must start with a capital letter and contain only alphanumeric characters'
       );
     });
 
-    it('should use inherit stdio for real-time output', async () => {
-      const execSyncSpy = vi.mocked(execSync).mockImplementation(() => Buffer.from(''));
+    it('should throw error if writeFile fails', () => {
+      vi.mocked(fs.writeFileSync).mockImplementation(() => {
+        throw new Error('Permission denied');
+      });
 
-      createComponent('MyButton');
-
-      expect(execSyncSpy).toHaveBeenCalledWith(
-        expect.any(String),
-        expect.objectContaining({ stdio: 'inherit' })
-      );
+      expect(() => createComponent('MyButton')).toThrow('Failed to create files: Permission denied');
     });
   });
 
   describe('component name validation', () => {
-    it('should handle PascalCase component names', async () => {
-      const execSyncSpy = vi.mocked(execSync).mockImplementation(() => Buffer.from(''));
-
+    it('should accept PascalCase component names', () => {
       createComponent('MyAwesomeButton');
 
-      const call = execSyncSpy.mock.calls[0]?.[0];
-      expect(call).toContain('MyAwesomeButton');
+      expect(fs.writeFileSync).toHaveBeenCalled();
     });
 
-    it('should handle kebab-case component names', async () => {
-      const execSyncSpy = vi.mocked(execSync).mockImplementation(() => Buffer.from(''));
-
-      createComponent('my-awesome-button');
-
-      const call = execSyncSpy.mock.calls[0]?.[0];
-      expect(call).toContain('my-awesome-button');
-    });
-
-    it('should handle single word component names', async () => {
-      const execSyncSpy = vi.mocked(execSync).mockImplementation(() => Buffer.from(''));
-
+    it('should accept single word component names', () => {
       createComponent('Button');
 
-      const call = execSyncSpy.mock.calls[0]?.[0];
-      expect(call).toContain('Button');
+      expect(fs.writeFileSync).toHaveBeenCalled();
+    });
+
+    it('should accept component names with numbers', () => {
+      createComponent('Button2');
+
+      expect(fs.writeFileSync).toHaveBeenCalled();
+    });
+
+    it('should reject empty component name', () => {
+      expect(() => createComponent('')).toThrow(
+        'Component name must start with a capital letter'
+      );
     });
   });
 
-  describe('description handling', () => {
-    it('should handle descriptions with special characters', async () => {
-      const execSyncSpy = vi.mocked(execSync).mockImplementation(() => Buffer.from(''));
+  describe('template generation', () => {
+    it('should include component name in test template', () => {
+      createComponent('MyButton');
 
-      createComponent('MyButton', 'A button with "quotes" & special <chars>');
-
-      const call = execSyncSpy.mock.calls[0]?.[0];
-      expect(call).toContain('A button with "quotes" & special <chars>');
+      const testFileCall = vi.mocked(fs.writeFileSync).mock.calls.find(
+        call => call[0].toString().endsWith('.test.ts')
+      );
+      expect(testFileCall?.[1]).toContain('MyButton');
+      expect(testFileCall?.[1]).toContain('import MyButton from');
     });
 
-    it('should handle multiline descriptions', async () => {
-      const execSyncSpy = vi.mocked(execSync).mockImplementation(() => Buffer.from(''));
+    it('should include data-testid in component template', () => {
+      createComponent('MyButton');
 
-      createComponent('MyButton', 'Line 1\nLine 2\nLine 3');
-
-      const call = execSyncSpy.mock.calls[0]?.[0];
-      expect(call).toContain('Line 1\nLine 2\nLine 3');
+      const componentFileCall = vi.mocked(fs.writeFileSync).mock.calls.find(
+        call => call[0].toString().endsWith('.vue')
+      );
+      expect(componentFileCall?.[1]).toContain('data-testid="mybutton-container"');
     });
 
-    it('should handle empty string description', async () => {
-      const execSyncSpy = vi.mocked(execSync).mockImplementation(() => Buffer.from(''));
+    it('should include TODO comments in component template', () => {
+      createComponent('MyButton');
 
-      createComponent('MyButton', '');
+      const componentFileCall = vi.mocked(fs.writeFileSync).mock.calls.find(
+        call => call[0].toString().endsWith('.vue')
+      );
+      expect(componentFileCall?.[1]).toContain('TODO: Implement component');
+    });
 
-      expect(execSyncSpy).toHaveBeenCalled();
+    it('should include multiple test describe blocks', () => {
+      createComponent('MyButton');
+
+      const testFileCall = vi.mocked(fs.writeFileSync).mock.calls.find(
+        call => call[0].toString().endsWith('.test.ts')
+      );
+      const content = testFileCall?.[1] as string;
+      expect(content).toContain('Component Initialization');
+      expect(content).toContain('Props');
+      expect(content).toContain('User Interactions');
+      expect(content).toContain('Emitted Events');
+      expect(content).toContain('Accessibility');
+      expect(content).toContain('Edge Cases');
     });
   });
 });
