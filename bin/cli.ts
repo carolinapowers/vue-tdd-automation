@@ -110,10 +110,9 @@ program
   .command('feature')
   .description('Interactive feature creation wizard')
   .option('--no-issue', 'Skip GitHub issue creation')
-  .action((options: FeatureOptions) => {
-    console.log(chalk.cyan.bold('\n🚀 Feature Creation Wizard\n'));
+  .action(async (options: FeatureOptions) => {
     try {
-      createFeature(options);
+      await createFeature(options);
     } catch (error) {
       console.error(chalk.red.bold('\n❌ Error:'), (error as Error).message);
       if (process.env.DEBUG) {
