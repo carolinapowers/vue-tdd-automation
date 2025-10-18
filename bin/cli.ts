@@ -28,6 +28,7 @@ interface InitOptions {
   workflows: boolean;
   docs: boolean;
   scripts: boolean;
+  scriptsTs: boolean;
   copilot: boolean;
   force: boolean;
 }
@@ -47,18 +48,32 @@ program
   .description('Initialize TDD workflow in your Vue project')
   .option('--no-workflows', 'Skip GitHub Actions workflows')
   .option('--no-docs', 'Skip documentation files')
-  .option('--no-scripts', 'Skip component creation scripts')
+  .option('--scripts', 'Copy component creation scripts (compiled JS, for GitHub Actions)')
+  .option('--scripts-ts', 'Copy component creation scripts (TypeScript source, for customization)')
   .option('--copilot', 'Add GitHub Copilot instructions for AI-assisted test writing')
   .option('--force', 'Overwrite existing files')
   .action((options: InitOptions) => {
     console.log(chalk.cyan.bold('\n🤖 Initializing Vue TDD Workflow...\n'));
     try {
-      initTDD(options);
+      // Convert CLI options to init options format
+      const initOptions = {
+        workflows: options.workflows,
+        docs: options.docs,
+        scripts: options.scriptsTs ? 'ts' : options.scripts ? 'js' : false,
+        copilot: options.copilot,
+        force: options.force
+      } as const;
+
+      initTDD(initOptions);
       console.log(chalk.green.bold('\n✅ TDD workflow initialized successfully!\n'));
       console.log(chalk.yellow('Next steps:'));
       console.log('  1. Run ' + chalk.cyan('npm install') + ' to install dependencies');
       console.log('  2. Create your first component: ' + chalk.cyan('npx vue-tdd create MyComponent'));
-      console.log('  3. Read TDD_WORKFLOW.md for detailed guide\n');
+      if (options.docs) {
+        console.log('  3. Read TDD_WORKFLOW.md for detailed guide\n');
+      } else {
+        console.log('');
+      }
     } catch (error) {
       console.error(chalk.red.bold('\n❌ Error:'), (error as Error).message);
       if (process.env.DEBUG) {
@@ -76,7 +91,7 @@ program
   .action((name: string, description?: string) => {
     console.log(chalk.cyan.bold(`\n🎨 Creating ${name} component...\n`));
     try {
-      createComponent(name, description);
+      createComponent(name, { description });
       console.log(chalk.green.bold('\n✅ Component created successfully!\n'));
       console.log(chalk.yellow('Next steps:'));
       console.log('  1. Run ' + chalk.cyan('npm run tdd') + ' to start test watch mode');
@@ -95,10 +110,9 @@ program
   .command('feature')
   .description('Interactive feature creation wizard')
   .option('--no-issue', 'Skip GitHub issue creation')
-  .action((options: FeatureOptions) => {
-    console.log(chalk.cyan.bold('\n🚀 Feature Creation Wizard\n'));
+  .action(async (options: FeatureOptions) => {
     try {
-      createFeature(options);
+      await createFeature(options);
     } catch (error) {
       console.error(chalk.red.bold('\n❌ Error:'), (error as Error).message);
       if (process.env.DEBUG) {

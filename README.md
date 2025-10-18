@@ -23,30 +23,51 @@ Automate your Vue.js TDD workflow with GitHub issue-driven development, automati
 npm install -D @carolinappowers/vue-tdd-automation
 ```
 
-### Initialize TDD in Your Project
+### Two Ways to Use
+
+#### 1️⃣ **CLI-First Approach** (Recommended - No Setup Required!)
+
+Start creating components immediately without any initialization:
+
+```bash
+# Create a component with tests - works instantly!
+npx vue-tdd create MyButton "A reusable button"
+
+# Or use the interactive feature wizard
+npx vue-tdd feature
+```
+
+✨ **That's it!** The CLI commands work out-of-the-box with no configuration needed.
+
+#### 2️⃣ **GitHub Actions Integration** (Optional)
+
+If you want automated TDD setup from GitHub issues, initialize the full workflow:
+
+```bash
+npx vue-tdd init --scripts
+```
+
+This adds:
+- GitHub Actions workflow for issue → PR automation
+- Component creation scripts for CI/CD
+- Issue templates
+
+**See the [Hybrid Architecture](#-hybrid-architecture) section below for details.**
+
+### Initialize Test Infrastructure (Optional but Recommended)
 
 ```bash
 npx vue-tdd init
 ```
 
-This will:
-- Set up Vitest configuration
-- Add test helpers and utilities
-- Install GitHub Actions workflow
-- Add issue templates
-- Create comprehensive documentation
+This adds:
+- Vitest configuration with 80% coverage thresholds
+- Test helpers and utilities
+- GitHub Actions workflows
+- Issue templates
+- Comprehensive TDD documentation
 
 **Tip:** Add `--copilot` flag to include GitHub Copilot instructions for AI-assisted test writing
-
-### Create Your First Component (TDD Style)
-
-```bash
-# Interactive feature creation
-npx vue-tdd feature
-
-# Or create a component directly
-npx vue-tdd create MyComponent "Component description"
-```
 
 ## 📖 Usage
 
@@ -64,24 +85,33 @@ npx vue-tdd init
 Options:
 - `--no-workflows` - Skip GitHub Actions workflows
 - `--no-docs` - Skip documentation files
-- `--no-scripts` - Skip component creation scripts
+- `--scripts` - Copy component creation scripts (compiled JS, for GitHub Actions)
+- `--scripts-ts` - Copy component creation scripts (TypeScript source, for customization)
 - `--copilot` - Add GitHub Copilot instructions file
 - `--force` - Overwrite existing files
 
 Examples:
 ```bash
-# Full installation (default)
+# Standard installation (workflows + docs, no scripts)
 npx vue-tdd init
+
+# With GitHub Actions automation (includes scripts)
+npx vue-tdd init --scripts
+
+# With TypeScript scripts for customization
+npx vue-tdd init --scripts-ts
 
 # With GitHub Copilot support
 npx vue-tdd init --copilot
 
 # Minimal (core test files only)
-npx vue-tdd init --no-workflows --no-docs --no-scripts
+npx vue-tdd init --no-workflows --no-docs
 
-# Skip workflows only
-npx vue-tdd init --no-workflows
+# Everything including scripts
+npx vue-tdd init --scripts --copilot
 ```
+
+**Note:** The `--scripts` flag is only needed if you want GitHub Actions to automatically create components from issues. The CLI commands (`create` and `feature`) work without any scripts!
 
 #### `vue-tdd feature`
 Interactive feature creation wizard.
@@ -107,6 +137,58 @@ npx vue-tdd create MyButton "A reusable button component"
 Creates:
 - `MyButton.vue` (minimal scaffold)
 - `MyButton.test.ts` (failing tests)
+
+## 🏗️ Hybrid Architecture
+
+This package uses a **hybrid architecture** that gives you the best of both worlds:
+
+### 🎯 Self-Contained CLI (Default)
+
+The `create` and `feature` commands work **immediately** without requiring any initialization or copied scripts:
+
+```bash
+npx vue-tdd create MyButton "A button"  # Works instantly!
+```
+
+**How it works:**
+- Commands import logic directly from the package
+- No scripts copied to your repository
+- Zero configuration required
+- Perfect for quick development
+
+### 🤖 GitHub Actions Integration (Optional)
+
+For automated TDD workflows from GitHub issues, enable script copying:
+
+```bash
+npx vue-tdd init --scripts  # Copies scripts for GitHub Actions
+```
+
+**When to use:**
+- You want issue → branch → PR automation
+- You need scripts in CI/CD workflows
+- You want to customize the generation logic
+
+### 📝 Script Customization (Advanced)
+
+Want to customize how components are generated? Copy the TypeScript source:
+
+```bash
+npx vue-tdd init --scripts-ts  # Copies TypeScript source files
+```
+
+Then edit `scripts/*.ts` in your project to customize:
+- Test templates
+- Component scaffolds
+- Requirement parsing logic
+
+### 🎨 Flexibility Matrix
+
+| Use Case | Command | Scripts Copied? | Customizable? |
+|----------|---------|----------------|---------------|
+| Quick development | `npx vue-tdd create` | ❌ No | ❌ No |
+| GitHub Actions | `npx vue-tdd init --scripts` | ✅ Yes (JS) | ⚠️ Limited |
+| Full customization | `npx vue-tdd init --scripts-ts` | ✅ Yes (TS) | ✅ Yes |
 
 ## 🔄 GitHub Workflow
 
